@@ -6,7 +6,6 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
   Route,
   Braces,
@@ -144,11 +143,12 @@ const productionCategories = [
 
 export default function Home() {
   return (
-    <div className="max-w-4xl">
+    <div className="max-w-4xl grain">
       <AnimatedHero />
 
+      {/* Highlights — asymmetric: first item wider */}
       <section className="mb-12">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-[2fr_1fr_1fr]">
           {highlights.map((item, index) => (
             <ScrollReveal key={item.title} delay={index * 0.1}>
               <div className="space-y-2">
@@ -167,11 +167,12 @@ export default function Home() {
         </div>
       </section>
 
-      <Separator className="my-8" />
+      <div className="my-10 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
 
+      {/* Fundamentals — full-width featured card with accent border */}
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-2">
-          <h2 className="text-xl font-semibold">Fundamentals</h2>
+          <h2 className="text-xl font-serif">Fundamentals</h2>
           <Badge
             variant="default"
             className="bg-gradient-to-r from-rose-500 to-pink-500 border-0"
@@ -183,38 +184,37 @@ export default function Home() {
           Before writing your first endpoint, learn the essentials — what APIs
           are, how to set up Python, manage secrets, and structure your project.
         </p>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Link href="/fundamentals">
-            <Card className="group h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer border-border/50 hover:border-border">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <div className="rounded-md p-1 text-rose-500 bg-rose-500/10 border-rose-500/20">
-                    <BookOpen className="size-4" />
-                  </div>
-                  <CardTitle className="text-base">Fundamentals</CardTitle>
-                  <Badge variant="secondary" className="ml-auto text-[10px]">
-                    5 topics
-                  </Badge>
+        <Link href="/fundamentals">
+          <Card className="group transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer border-border/50 hover:border-border border-l-2 border-l-rose-500/40">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <div className="rounded-md p-1 text-rose-500 bg-rose-500/10 border-rose-500/20">
+                  <BookOpen className="size-4" />
                 </div>
-                <CardDescription>
-                  APIs, Python setup, virtual environments, .env files, project
-                  structure, and auto-generated documentation.
-                </CardDescription>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground/70 pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span>Explore</span>
-                  <ArrowRight className="size-3" />
-                </div>
-              </CardHeader>
-            </Card>
-          </Link>
-        </div>
+                <CardTitle className="text-base">Fundamentals</CardTitle>
+                <Badge variant="secondary" className="ml-auto text-[10px]">
+                  5 topics
+                </Badge>
+              </div>
+              <CardDescription>
+                APIs, Python setup, virtual environments, .env files, project
+                structure, and auto-generated documentation.
+              </CardDescription>
+              <div className="flex items-center gap-1 text-xs text-muted-foreground/70 pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Explore</span>
+                <ArrowRight className="size-3" />
+              </div>
+            </CardHeader>
+          </Card>
+        </Link>
       </section>
 
-      <Separator className="my-8" />
+      <div className="my-10 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
 
+      {/* Basics — 2 cards with staggered offset */}
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-2">
-          <h2 className="text-xl font-semibold">Basics</h2>
+          <h2 className="text-xl font-serif">Basics</h2>
           <Badge
             variant="default"
             className="bg-gradient-to-r from-emerald-500 to-teal-500 border-0"
@@ -228,8 +228,8 @@ export default function Home() {
           handles data validation and serialization.
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
-          {basicsCategories.map((category) => (
-            <Link key={category.href} href={category.href}>
+          {basicsCategories.map((category, index) => (
+            <Link key={category.href} href={category.href} className={index === 1 ? "sm:translate-y-3" : ""}>
               <Card className="group h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer border-border/50 hover:border-border">
                 <CardHeader>
                   <div className="flex items-center gap-2">
@@ -260,11 +260,12 @@ export default function Home() {
         </div>
       </section>
 
-      <Separator className="my-8" />
+      <div className="my-10 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
 
+      {/* Core Patterns — 2+1 layout: first two side-by-side, third offset */}
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-2">
-          <h2 className="text-xl font-semibold">Core Patterns</h2>
+          <h2 className="text-xl font-serif">Core Patterns</h2>
           <Badge variant="outline">Architecture</Badge>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
@@ -272,8 +273,12 @@ export default function Home() {
           Dependency injection, middleware, and error handling strategies.
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
-          {coreCategories.map((category) => (
-            <Link key={category.href} href={category.href}>
+          {coreCategories.map((category, index) => (
+            <Link
+              key={category.href}
+              href={category.href}
+              className={index === 2 ? "sm:max-w-sm" : ""}
+            >
               <Card className="group h-full transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer border-border/50 hover:border-border">
                 <CardHeader>
                   <div className="flex items-center gap-2">
@@ -296,11 +301,12 @@ export default function Home() {
         </div>
       </section>
 
-      <Separator className="my-8" />
+      <div className="my-10 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
 
+      {/* Advanced — first card spans full width, others below */}
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-2">
-          <h2 className="text-xl font-semibold">Advanced</h2>
+          <h2 className="text-xl font-serif">Advanced</h2>
           <Badge variant="secondary">Deep Dive</Badge>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
@@ -308,8 +314,12 @@ export default function Home() {
           handling — everything you need for production-ready APIs.
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
-          {advancedCategories.map((category) => (
-            <Link key={category.href} href={category.href}>
+          {advancedCategories.map((category, index) => (
+            <Link
+              key={category.href}
+              href={category.href}
+              className={index === 0 ? "sm:col-span-2" : ""}
+            >
               <Card className="group h-full transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer border-border/50 hover:border-border">
                 <CardHeader>
                   <div className="flex items-center gap-2">
@@ -332,11 +342,12 @@ export default function Home() {
         </div>
       </section>
 
-      <Separator className="my-8" />
+      <div className="my-10 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
 
+      {/* Production — right-aligned with whitespace */}
       <section>
-        <div className="flex items-center gap-2 mb-2">
-          <h2 className="text-xl font-semibold">Production</h2>
+        <div className="flex items-center gap-2 mb-2 sm:justify-end">
+          <h2 className="text-xl font-serif">Production</h2>
           <Badge
             variant="default"
             className="bg-gradient-to-r from-emerald-500 to-green-500 border-0"
@@ -344,40 +355,42 @@ export default function Home() {
             Ship It
           </Badge>
         </div>
-        <p className="text-sm text-muted-foreground mb-6">
+        <p className="text-sm text-muted-foreground mb-6 sm:text-right">
           Testing and quality assurance — make sure your API works before
           shipping it to production.
         </p>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {productionCategories.map((category) => (
-            <Link key={category.href} href={category.href}>
-              <Card className="group h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer border-border/50 hover:border-border">
-                <CardHeader>
-                  <div className="flex items-center gap-2">
-                    <div className={`rounded-md p-1 ${category.accent}`}>
-                      <category.icon className="size-4" />
+        <div className="flex sm:justify-end">
+          <div className="w-full sm:w-2/3 lg:w-1/2">
+            {productionCategories.map((category) => (
+              <Link key={category.href} href={category.href}>
+                <Card className="group h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer border-border/50 hover:border-border">
+                  <CardHeader>
+                    <div className="flex items-center gap-2">
+                      <div className={`rounded-md p-1 ${category.accent}`}>
+                        <category.icon className="size-4" />
+                      </div>
+                      <CardTitle className="text-base">
+                        {category.label}
+                      </CardTitle>
+                      <Badge
+                        variant="secondary"
+                        className="ml-auto text-[10px]"
+                      >
+                        {category.topicCount} topics
+                      </Badge>
                     </div>
-                    <CardTitle className="text-base">
-                      {category.label}
-                    </CardTitle>
-                    <Badge
-                      variant="secondary"
-                      className="ml-auto text-[10px]"
-                    >
-                      {category.topicCount} topics
-                    </Badge>
-                  </div>
-                  <CardDescription className="line-clamp-2">
-                    {category.description}
-                  </CardDescription>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground/70 pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span>Explore</span>
-                    <ArrowRight className="size-3" />
-                  </div>
-                </CardHeader>
-              </Card>
-            </Link>
-          ))}
+                    <CardDescription className="line-clamp-2">
+                      {category.description}
+                    </CardDescription>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground/70 pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span>Explore</span>
+                      <ArrowRight className="size-3" />
+                    </div>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </div>

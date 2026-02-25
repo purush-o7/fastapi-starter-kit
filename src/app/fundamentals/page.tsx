@@ -75,7 +75,7 @@ export default function FundamentalsPage() {
 
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
-          <h1 className="text-3xl font-bold">Fundamentals</h1>
+          <h1 className="text-3xl font-serif italic">Fundamentals</h1>
           <Badge variant="secondary">5 topics</Badge>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl">
@@ -90,7 +90,7 @@ export default function FundamentalsPage() {
         <FundamentalsHeroViz />
       </ScrollReveal>
 
-      <div className="rounded-lg border bg-rose-500/5 border-rose-500/20 p-4 mb-8">
+      <div className="rounded-lg glass border-rose-500/20 p-4 mb-8">
         <div className="flex gap-3">
           <Lightbulb className="size-5 text-rose-500 shrink-0 mt-0.5" />
           <div>

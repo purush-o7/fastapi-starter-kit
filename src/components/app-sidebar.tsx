@@ -254,7 +254,7 @@ export function AppSidebar() {
         <Link href="/" className="flex items-center gap-2">
           <Zap className="size-5" />
           <div>
-            <p className="text-sm font-semibold leading-none">What is FastAPI</p>
+            <p className="text-sm font-serif italic leading-none">What is <span className="not-italic font-sans font-semibold">FastAPI</span></p>
             <p className="text-xs text-muted-foreground">
               Interactive Guide
             </p>

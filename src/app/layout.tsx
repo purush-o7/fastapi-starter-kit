@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit, JetBrains_Mono } from "next/font/google";
+import { Instrument_Serif, DM_Sans, JetBrains_Mono } from "next/font/google";
 import Providers from "./providers";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
@@ -13,7 +13,14 @@ import { PageTransition } from "@/components/page-transition";
 import { KeyboardProvider } from "@/components/keyboard-provider";
 import "./globals.css";
 
-const outfit = Outfit({
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+});
+
+const dmSans = DM_Sans({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
@@ -40,7 +47,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${outfit.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${instrumentSerif.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <Providers>
           <SidebarProvider>

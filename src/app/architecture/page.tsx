@@ -116,7 +116,7 @@ export default function ArchitecturePage() {
 
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
-          <h1 className="text-3xl font-bold">Architecture</h1>
+          <h1 className="text-3xl font-serif italic">Architecture</h1>
           <Badge variant="secondary">5 topics</Badge>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl">
@@ -131,7 +131,7 @@ export default function ArchitecturePage() {
         <ArchitectureHeroViz />
       </ScrollReveal>
 
-      <div className="rounded-lg border bg-purple-500/5 border-purple-500/20 p-4 mb-8">
+      <div className="rounded-lg glass border-purple-500/20 p-4 mb-8">
         <div className="flex gap-3">
           <Lightbulb className="size-5 text-purple-500 shrink-0 mt-0.5" />
           <div>

@@ -84,7 +84,7 @@ export default function RoutingPage() {
 
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
-          <h1 className="text-3xl font-bold">Routing</h1>
+          <h1 className="text-3xl font-serif italic">Routing</h1>
           <Badge variant="secondary">3 topics</Badge>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl">
@@ -98,7 +98,7 @@ export default function RoutingPage() {
         <RoutingHeroViz />
       </ScrollReveal>
 
-      <div className="rounded-lg border bg-teal-500/5 border-teal-500/20 p-4 mb-8">
+      <div className="rounded-lg glass border-teal-500/20 p-4 mb-8">
         <div className="flex gap-3">
           <Lightbulb className="size-5 text-teal-500 shrink-0 mt-0.5" />
           <div>

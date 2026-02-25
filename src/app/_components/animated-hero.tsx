@@ -25,8 +25,9 @@ const LEARNING_PATH = [
 
 export function AnimatedHero() {
   return (
-    <div className="mb-14 relative">
+    <div className="mb-14 relative grain">
       <div className="absolute -top-10 -left-10 w-72 h-72 bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-20 -right-16 w-64 h-64 bg-gradient-to-tl from-cyan-500/8 via-teal-500/6 to-transparent rounded-full blur-3xl pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -43,7 +44,7 @@ export function AnimatedHero() {
           Welcome to
         </motion.p>
         <motion.h1
-          className="text-4xl sm:text-5xl font-bold tracking-tight mb-4"
+          className="text-4xl sm:text-5xl lg:text-6xl font-serif italic tracking-tight mb-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{
@@ -53,7 +54,7 @@ export function AnimatedHero() {
           }}
         >
           What is{" "}
-          <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent not-italic font-sans font-bold">
             FastAPI
           </span>
         </motion.h1>
@@ -99,7 +100,7 @@ export function AnimatedHero() {
         <p className="text-[10px] uppercase tracking-wider text-muted-foreground/50 mb-3">
           Learning Path
         </p>
-        <div className="flex items-center gap-0 overflow-x-auto pb-2">
+        <div className="flex items-center gap-0 overflow-x-auto pb-2 dot-grid rounded-lg py-4 px-2 -mx-2">
           {LEARNING_PATH.map((step, index) => {
             const StepIcon = step.icon;
             return (

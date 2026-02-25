@@ -66,7 +66,7 @@ export default function ErrorHandlingPage() {
 
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
-          <h1 className="text-3xl font-bold">Error Handling</h1>
+          <h1 className="text-3xl font-serif italic">Error Handling</h1>
           <Badge variant="secondary">2 topics</Badge>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl">
@@ -81,7 +81,7 @@ export default function ErrorHandlingPage() {
         <ErrorHeroViz />
       </ScrollReveal>
 
-      <div className="rounded-lg border bg-orange-500/5 border-orange-500/20 p-4 mb-8">
+      <div className="rounded-lg glass border-orange-500/20 p-4 mb-8">
         <div className="flex gap-3">
           <Lightbulb className="size-5 text-orange-500 shrink-0 mt-0.5" />
           <div>
