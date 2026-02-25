@@ -60,7 +60,8 @@ pip freeze > requirements.txt
 
 export default function PythonSetupPage() {
   return (
-    <div className="max-w-4xl ambient-fundamentals">
+    <div className="max-w-4xl relative">
+      <div className="absolute -top-10 -left-10 w-72 h-72 bg-gradient-to-br from-emerald-500/10 via-green-500/10 to-teal-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-3">
           <h1 className="text-3xl font-bold">Python Setup</h1>
