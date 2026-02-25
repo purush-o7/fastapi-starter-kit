@@ -82,7 +82,8 @@ def test_items():
 
 export default function ProductionPage() {
   return (
-    <div className="max-w-4xl ambient-testing">
+    <div className="max-w-4xl relative">
+      <div className="absolute -top-10 -left-10 w-72 h-72 bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-green-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="h-1 w-20 rounded-full bg-gradient-to-r from-emerald-500 to-green-500 mb-8" />
 
       <div className="mb-8">

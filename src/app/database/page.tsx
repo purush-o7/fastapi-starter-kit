@@ -88,7 +88,8 @@ Base.metadata.create_all(bind=engine)  # ← Only creates
 
 export default function DatabasePage() {
   return (
-    <div className="max-w-4xl ambient-database">
+    <div className="max-w-4xl relative">
+      <div className="absolute -top-10 -left-10 w-72 h-72 bg-gradient-to-br from-cyan-500/10 via-teal-500/10 to-blue-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="h-1 w-20 rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 mb-8" />
 
       <div className="mb-8">

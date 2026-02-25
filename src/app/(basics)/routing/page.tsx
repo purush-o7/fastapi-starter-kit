@@ -87,7 +87,8 @@ async def get_user(user_id: str):
 
 export default function RoutingPage() {
   return (
-    <div className="max-w-4xl ambient-routing">
+    <div className="max-w-4xl relative">
+      <div className="absolute -top-10 -left-10 w-72 h-72 bg-gradient-to-br from-teal-500/10 via-emerald-500/10 to-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="h-1 w-20 rounded-full bg-gradient-to-r from-teal-500 to-emerald-500 mb-8" />
 
       <div className="mb-8">

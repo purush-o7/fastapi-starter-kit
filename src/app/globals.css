@@ -143,69 +143,35 @@
   }
 }
 
-@layer utilities {
-  .ambient-routing {
-    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.6 0.15 175 / 4%) 0%, transparent 60%);
-  }
-  .ambient-data {
-    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.488 0.243 264.376 / 4%) 0%, transparent 60%);
-  }
-  .ambient-architecture {
-    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.627 0.265 303.9 / 4%) 0%, transparent 60%);
-  }
-  .ambient-errors {
-    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.637 0.237 25.331 / 4%) 0%, transparent 60%);
-  }
-  .ambient-auth {
-    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.769 0.188 70.08 / 4%) 0%, transparent 60%);
-  }
-  .ambient-async {
-    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.488 0.243 264.376 / 4%) 0%, transparent 60%);
-  }
-  .ambient-fundamentals {
-    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.7 0.15 145 / 4%) 0%, transparent 60%);
-  }
-  .ambient-database {
-    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.6 0.118 184.704 / 4%) 0%, transparent 60%);
-  }
-  .ambient-under-the-hood {
-    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.768 0.233 130.85 / 4%) 0%, transparent 60%);
-  }
-  .ambient-production,
-  .ambient-testing {
-    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.696 0.17 162.48 / 4%) 0%, transparent 60%);
-  }
+/* Grain noise overlay */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px;
+}
 
-  /* Grain noise overlay — apply to containers for subtle film texture */
-  .grain {
-    position: relative;
-  }
-  .grain::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.03;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 256px;
-  }
+/* Frosted glass panel */
+.glass {
+  background: oklch(1 0 0 / 50%);
+  backdrop-filter: blur(12px) saturate(1.4);
+  border: 1px solid oklch(1 0 0 / 12%);
+}
+.dark .glass {
+  background: oklch(0.15 0 0 / 50%);
+  border-color: oklch(1 0 0 / 8%);
+}
 
-  /* Frosted glass panel */
-  .glass {
-    background: oklch(1 0 0 / 50%);
-    backdrop-filter: blur(12px) saturate(1.4);
-    border: 1px solid oklch(1 0 0 / 12%);
-  }
-  .dark .glass {
-    background: oklch(0.15 0 0 / 50%);
-    border-color: oklch(1 0 0 / 8%);
-  }
-
-  /* Subtle dot grid pattern */
-  .dot-grid {
-    background-image: radial-gradient(circle, oklch(0.5 0 0 / 7%) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
+/* Subtle dot grid pattern */
+.dot-grid {
+  background-image: radial-gradient(circle, oklch(0.5 0 0 / 7%) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
