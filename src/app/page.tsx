@@ -148,6 +148,49 @@ export default function Home() {
 
       <section className="mb-10">
         <div className="flex items-center gap-2 mb-2">
+          <h2 className="text-xl font-semibold">Fundamentals</h2>
+          <Badge
+            variant="default"
+            className="bg-gradient-to-r from-rose-500 to-pink-500 border-0"
+          >
+            Getting Started
+          </Badge>
+        </div>
+        <p className="text-sm text-muted-foreground mb-6">
+          Before writing your first endpoint, learn the essentials — what APIs
+          are, how to set up Python, manage secrets, and structure your project.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Link href="/fundamentals">
+            <Card className="group h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer border-border/50 hover:border-border">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <div className="rounded-md p-1 text-rose-500 bg-rose-500/10 border-rose-500/20">
+                    <BookOpen className="size-4" />
+                  </div>
+                  <CardTitle className="text-base">Fundamentals</CardTitle>
+                  <Badge variant="secondary" className="ml-auto text-[10px]">
+                    5 topics
+                  </Badge>
+                </div>
+                <CardDescription>
+                  APIs, Python setup, virtual environments, .env files, project
+                  structure, and auto-generated documentation.
+                </CardDescription>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground/70 pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span>Explore</span>
+                  <ArrowRight className="size-3" />
+                </div>
+              </CardHeader>
+            </Card>
+          </Link>
+        </div>
+      </section>
+
+      <Separator className="my-8" />
+
+      <section className="mb-10">
+        <div className="flex items-center gap-2 mb-2">
           <h2 className="text-xl font-semibold">Basics</h2>
           <Badge
             variant="default"

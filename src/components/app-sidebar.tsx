@@ -29,6 +29,11 @@ import {
   ListTodo,
   HardDrive,
   Upload,
+  BookOpen,
+  Globe,
+  Terminal,
+  FileKey,
+  FileText,
 } from "lucide-react";
 import {
   Sidebar,
@@ -65,6 +70,21 @@ type Category = {
   icon: React.ComponentType<{ className?: string }>;
   topics: TopicItem[];
 };
+
+const fundamentalsCategories: Category[] = [
+  {
+    label: "Fundamentals",
+    href: "/fundamentals",
+    icon: BookOpen,
+    topics: [
+      { href: "/fundamentals/what-is-an-api", label: "What is an API?", icon: Globe },
+      { href: "/fundamentals/python-setup", label: "Python Setup", icon: Terminal },
+      { href: "/fundamentals/environment-variables", label: "Environment Variables", icon: FileKey },
+      { href: "/fundamentals/project-structure", label: "Project Structure", icon: FolderTree },
+      { href: "/fundamentals/auto-generated-docs", label: "Auto-Generated Docs", icon: FileText },
+    ],
+  },
+];
 
 const basicsCategories: Category[] = [
   {
@@ -205,6 +225,20 @@ export function AppSidebar() {
         </Link>
       </SidebarHeader>
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Getting Started</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {fundamentalsCategories.map((category) => (
+                <CategoryItem
+                  key={category.href}
+                  category={category}
+                  pathname={pathname}
+                />
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Basics</SidebarGroupLabel>
           <SidebarGroupContent>

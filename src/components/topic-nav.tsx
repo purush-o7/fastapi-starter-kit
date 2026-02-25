@@ -7,6 +7,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 type TopicLink = { href: string; label: string };
 
 const categoryTopics: Record<string, TopicLink[]> = {
+  "/fundamentals": [
+    { href: "/fundamentals/what-is-an-api", label: "What is an API?" },
+    { href: "/fundamentals/python-setup", label: "Python Setup" },
+    { href: "/fundamentals/environment-variables", label: "Environment Variables" },
+    { href: "/fundamentals/project-structure", label: "Project Structure" },
+    { href: "/fundamentals/auto-generated-docs", label: "Auto-Generated Docs" },
+  ],
   "/routing": [
     { href: "/routing/path-operations", label: "Path Operations" },
     { href: "/routing/path-parameters", label: "Path Parameters" },

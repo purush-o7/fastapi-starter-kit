@@ -160,6 +160,9 @@
   .ambient-async {
     background-image: radial-gradient(ellipse at 20% 0%, oklch(0.488 0.243 264.376 / 4%) 0%, transparent 60%);
   }
+  .ambient-fundamentals {
+    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.7 0.15 145 / 4%) 0%, transparent 60%);
+  }
   .ambient-database {
     background-image: radial-gradient(ellipse at 20% 0%, oklch(0.6 0.118 184.704 / 4%) 0%, transparent 60%);
   }

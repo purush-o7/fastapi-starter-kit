@@ -6,6 +6,12 @@ import { ChevronRight, Home } from "lucide-react";
 import { Fragment } from "react";
 
 const labelMap: Record<string, string> = {
+  fundamentals: "Fundamentals",
+  "what-is-an-api": "What is an API?",
+  "python-setup": "Python Setup",
+  "environment-variables": "Environment Variables",
+  "project-structure": "Project Structure",
+  "auto-generated-docs": "Auto-Generated Docs",
   routing: "Routing",
   "data-handling": "Data Handling",
   architecture: "Architecture",
