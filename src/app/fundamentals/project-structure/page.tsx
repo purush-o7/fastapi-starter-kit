@@ -5,6 +5,67 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
+
+const mistakes: Mistake[] = [
+  {
+    title: "Circular imports between routers and main",
+    subtitle: "Importing the app instance inside router files",
+    wrongCode: `# routers/users.py
+from main import app  # Circular import!
+
+@app.get("/users")
+async def get_users():
+    return []`,
+    rightCode: `# routers/users.py
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/")
+async def get_users():
+    return []
+
+# main.py
+from routers import users
+app.include_router(users.router, prefix="/users")`,
+    filename: "routers/users.py",
+    explanation: "Never import the app instance in router files — this creates circular imports. Use APIRouter() in each router file and include_router() in main.py to wire them together.",
+  },
+  {
+    title: "Putting everything in main.py",
+    subtitle: "Defining models, schemas, and dozens of endpoints in one file",
+    wrongCode: `# main.py — 500+ lines with everything mixed together
+from fastapi import FastAPI
+from pydantic import BaseModel
+from sqlalchemy import create_engine, Column, Integer, String
+# ... 20 more imports
+
+app = FastAPI()
+
+class UserDB(Base): ...
+class ItemDB(Base): ...
+class UserSchema(BaseModel): ...
+class ItemSchema(BaseModel): ...
+
+@app.get("/users") ...
+@app.post("/users") ...
+@app.get("/items") ...
+# ... 30 more endpoints`,
+    rightCode: `# main.py — clean and focused
+from fastapi import FastAPI
+from routers import users, items
+
+app = FastAPI(title="My API")
+
+app.include_router(users.router, prefix="/users")
+app.include_router(items.router, prefix="/items")
+
+# Models in models/, Schemas in schemas/, Endpoints in routers/`,
+    filename: "main.py",
+    explanation: "A 500-line main.py becomes impossible to navigate. Split by responsibility: routers for endpoints, schemas for Pydantic models, models for database tables. main.py should just wire things together.",
+  },
+];
 
 export default function ProjectStructurePage() {
   return (
@@ -138,6 +199,8 @@ app.include_router(items.router, prefix="/items", tags=["Items"])`}
           </div>
         </section>
       </ScrollReveal>
+
+      <CommonMistakes mistakes={mistakes} />
     </div>
   );
 }

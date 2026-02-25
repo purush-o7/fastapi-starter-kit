@@ -5,6 +5,43 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
+
+const mistakes: Mistake[] = [
+  {
+    title: "Installing packages globally",
+    subtitle: "Not activating a virtual environment before pip install",
+    wrongCode: `# No virtual environment active!
+pip install fastapi uvicorn
+# Packages installed globally — conflicts with other projects`,
+    rightCode: `# Create and activate venv first
+python -m venv .venv
+source .venv/bin/activate  # Mac/Linux
+# .venv\\Scripts\\activate   # Windows
+
+pip install fastapi uvicorn
+# Packages isolated to this project only`,
+    filename: "terminal",
+    explanation: "Without an active virtual environment, pip installs packages globally. This causes version conflicts between projects and makes it impossible to reproduce your exact setup.",
+  },
+  {
+    title: "Forgetting to freeze dependencies",
+    subtitle: "Not saving installed packages to requirements.txt",
+    wrongCode: `pip install fastapi uvicorn httpx
+# Works on your machine...
+# But your teammate clones the repo and has no idea
+# what packages to install!`,
+    rightCode: `pip install fastapi uvicorn httpx
+
+# Save all packages with exact versions
+pip freeze > requirements.txt
+
+# Now anyone can recreate your environment:
+# pip install -r requirements.txt`,
+    filename: "terminal",
+    explanation: "Without requirements.txt, no one else can reproduce your environment. Always run pip freeze after installing new packages to keep the file up to date.",
+  },
+];
 
 export default function PythonSetupPage() {
   return (
@@ -137,6 +174,8 @@ python-dotenv==1.0.1`}
           </div>
         </section>
       </ScrollReveal>
+
+      <CommonMistakes mistakes={mistakes} />
     </div>
   );
 }

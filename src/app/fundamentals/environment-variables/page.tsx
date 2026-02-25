@@ -5,6 +5,50 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
+
+const mistakes: Mistake[] = [
+  {
+    title: "Hardcoding secrets in source code",
+    subtitle: "Putting passwords and API keys directly in Python files",
+    wrongCode: `from fastapi import FastAPI
+
+app = FastAPI()
+
+DATABASE_URL = "postgresql://admin:p@ssw0rd@db.example.com/prod"
+SECRET_KEY = "my-super-secret-jwt-key"
+# These will end up on GitHub!`,
+    rightCode: `from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    database_url: str
+    secret_key: str
+
+    class Config:
+        env_file = ".env"
+
+settings = Settings()
+# Secrets stay in .env, never in source code`,
+    filename: "config.py",
+    explanation: "Secrets in source code get committed to version control and become visible to anyone with repo access. Use .env files and pydantic-settings to keep secrets separate from code.",
+  },
+  {
+    title: "Forgetting to .gitignore the .env file",
+    subtitle: "Committing .env to version control by accident",
+    wrongCode: `# .gitignore
+__pycache__/
+*.pyc
+# Oops — .env is not listed!`,
+    rightCode: `# .gitignore
+__pycache__/
+*.pyc
+.env
+.env.*
+*.db`,
+    filename: ".gitignore",
+    explanation: "Even if you use .env files correctly, forgetting to add .env to .gitignore means your secrets get committed on the first git add. Always add .env to .gitignore before your first commit.",
+  },
+];
 
 export default function EnvironmentVariablesPage() {
   return (
@@ -132,6 +176,8 @@ settings = Settings()
           </div>
         </section>
       </ScrollReveal>
+
+      <CommonMistakes mistakes={mistakes} />
     </div>
   );
 }
