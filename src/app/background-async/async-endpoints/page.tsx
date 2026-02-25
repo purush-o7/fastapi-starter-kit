@@ -5,6 +5,13 @@ import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
 import { SyncAsyncRace } from "../_components/sync-async-race";
+import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
+import { AhaMoment } from "@/components/aha-moment";
+import { WhatYouJustLearned } from "@/components/what-you-just-learned";
+import { MentalModelChallenge } from "@/components/mental-model-challenge";
+import { ConversationalCallout } from "@/components/conversational-callout";
+import { FailureDeepDive } from "@/components/failure-deep-dive";
+import { SimpleFlow } from "@/components/simple-flow";
 
 export default function AsyncEndpointsPage() {
   return (
@@ -15,81 +22,224 @@ export default function AsyncEndpointsPage() {
           <Badge variant="outline">Core Concept</Badge>
         </div>
         <TextEffect preset="fade-in-blur" per="word" delay={0.1} className="text-lg text-muted-foreground max-w-2xl">
-          FastAPI supports both async and sync endpoints. Understanding when to use each is crucial for building high-performance APIs.
+          You added async to your endpoint and made it slower. Let&apos;s figure out why.
         </TextEffect>
       </div>
 
+      {/* 1. Failure Hook */}
+      <WhatCouldGoWrong
+        scenario={`You write async def read_items() and call requests.get() inside it. Your API handles one request at a time. 100 concurrent users? They wait in a single-file queue. You used async but got worse performance than sync.`}
+        error={`# Your "async" endpoint:\n@app.get("/items")\nasync def read_items():\n    response = requests.get("https://api.example.com/data")  # ← BLOCKING!\n    return response.json()\n\n# Load test results:\n# Sync endpoint (def):     100 req in 2.1s ✓\n# Your async endpoint:     100 req in 45.3s ✗\n# Why is async SLOWER?!`}
+        errorType="Performance Trap"
+        accentColor="indigo"
+        className="mb-8"
+      />
+
+      {/* 2. Bridge from failure to concept */}
+      <ConversationalCallout type="question" className="mb-8">
+        <p>
+          Wait, isn&apos;t async supposed to be <em>faster</em>? Why did adding one keyword
+          make your API 20x slower? The answer comes down to one thing: what
+          happens inside your function when it hits that blocking call.
+        </p>
+      </ConversationalCallout>
+
+      {/* 3. Mental model BEFORE code */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">async def vs def</h2>
-          <p className="text-muted-foreground mb-4">FastAPI handles async and sync functions differently under the hood.</p>
-          <CodeBlock code={`from fastapi import FastAPI
+          <h2 className="text-2xl font-semibold mb-4">How FastAPI Handles Your Functions</h2>
+          <p className="text-muted-foreground mb-4">
+            FastAPI treats <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">async def</code> and{" "}
+            <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">def</code> very differently under the hood.
+            Here&apos;s what happens when a request comes in:
+          </p>
 
-app = FastAPI()
+          <div className="space-y-6">
+            <div>
+              <p className="text-sm font-medium mb-2">With <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">async def</code>:</p>
+              <SimpleFlow
+                steps={[
+                  { label: "Request arrives", detail: "FastAPI receives it" },
+                  { label: "Runs on event loop", detail: "Single thread, shared" },
+                  { label: "Hits await", detail: "Pauses, lets others run", status: "success" },
+                  { label: "I/O completes", detail: "Resumes where it left off", status: "success" },
+                ]}
+                accentColor="indigo"
+              />
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">With plain <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">def</code>:</p>
+              <SimpleFlow
+                steps={[
+                  { label: "Request arrives", detail: "FastAPI receives it" },
+                  { label: "Sent to thread pool", detail: "Gets its own thread" },
+                  { label: "Blocks thread", detail: "Only this thread waits", status: "success" },
+                  { label: "Returns result", detail: "Thread freed up", status: "success" },
+                ]}
+                accentColor="indigo"
+              />
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
 
-# Async — runs on the event loop
-# Use for I/O-bound operations with async libraries
-@app.get("/async-items")
-async def read_items_async():
-    data = await async_db.fetch_all("SELECT * FROM items")
-    return data
+      {/* 4. Checkpoint */}
+      <WhatYouJustLearned
+        points={[
+          "async def runs directly on the event loop — it must use await to yield control",
+          "Plain def runs in a separate thread pool — blocking is safe because it only blocks that thread",
+          "The disaster: async def + blocking call = blocks the entire event loop",
+        ]}
+        section="async vs def routing"
+        className="mb-8"
+      />
 
-# Sync — runs in a thread pool
-# Use for CPU-bound or blocking I/O operations
-@app.get("/sync-items")
-def read_items_sync():
-    data = sync_db.execute("SELECT * FROM items")
-    return data`} filename="main.py" />
+      <Separator className="my-8" />
+
+      {/* 5. Code walkthrough — the problem */}
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">The Trap: async def + Blocking Code</h2>
+          <p className="text-muted-foreground mb-4">
+            Here&apos;s the code that ruined your load test. It <em>looks</em> async, but it&apos;s lying.
+            The <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">requests</code> library is
+            synchronous. It doesn&apos;t know what <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">await</code> is.
+            It just... blocks.
+          </p>
+          <CodeBlock code={`import requests  # ← This is the problem
+
+@app.get("/items")
+async def read_items():
+    # This blocks the ENTIRE event loop!
+    # No other request can be processed while waiting
+    response = requests.get("https://api.example.com/data")
+    return response.json()
+
+# Meanwhile, 99 other users are waiting...
+# The event loop is frozen on this one HTTP call.`} filename="main.py" />
         </section>
       </ScrollReveal>
 
       <Separator className="my-8" />
 
+      {/* The fix — proper async */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Async HTTP Calls</h2>
-          <p className="text-muted-foreground mb-4">Use httpx or aiohttp for non-blocking HTTP requests in async endpoints.</p>
-          <CodeBlock code={`import httpx
+          <h2 className="text-2xl font-semibold mb-4">The Fix: Use Async Libraries</h2>
+          <p className="text-muted-foreground mb-4">
+            If you&apos;re going to use <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">async def</code>,
+            every I/O call inside it needs to be awaitable. Replace{" "}
+            <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">requests</code> with{" "}
+            <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">httpx</code>.
+          </p>
+          <CodeBlock code={`import httpx  # ← async-ready HTTP client
 
-@app.get("/external-data")
-async def get_external_data():
+@app.get("/items")
+async def read_items():
     async with httpx.AsyncClient() as client:
+        # This yields to the event loop while waiting
         response = await client.get("https://api.example.com/data")
         return response.json()
 
-# Fetch multiple APIs concurrently
-import asyncio
+# Now 100 users can all be "waiting" at the same time.
+# The event loop juggles them all.`} filename="main.py" />
+        </section>
+      </ScrollReveal>
+
+      <AhaMoment
+        setup="Why not just use async def for everything and be done with it?"
+        reveal="Because async def is only faster when you use async libraries inside it. If your code calls requests, time.sleep, or any other blocking library, a regular def endpoint is actually BETTER — FastAPI runs it in a thread pool automatically, keeping the event loop free. async def is a promise: 'I will never block.' Break that promise and you break the whole server."
+        className="mb-8"
+      />
+
+      <WhatYouJustLearned
+        points={[
+          "requests.get() inside async def blocks the entire event loop — all users freeze",
+          "httpx.AsyncClient with await lets the event loop handle other requests while waiting",
+          "If you can't use async libraries, just use plain def — it's safer",
+        ]}
+        section="blocking vs non-blocking"
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      {/* Concurrent fetching */}
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">The Real Power: Concurrent I/O</h2>
+          <p className="text-muted-foreground mb-4">
+            Here&apos;s where async really shines. Need data from three APIs? Don&apos;t wait for
+            each one sequentially — fire them all at once with{" "}
+            <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">asyncio.gather</code>.
+          </p>
+          <CodeBlock code={`import asyncio
+import httpx
 
 @app.get("/dashboard")
 async def get_dashboard():
     async with httpx.AsyncClient() as client:
-        users, orders = await asyncio.gather(
+        # Fire all three requests at the same time
+        users, orders, stats = await asyncio.gather(
             client.get("https://api.example.com/users"),
             client.get("https://api.example.com/orders"),
+            client.get("https://api.example.com/stats"),
         )
-    return {"users": users.json(), "orders": orders.json()}`} filename="main.py" />
+    # Total time ≈ slowest request, not sum of all three!
+    return {
+        "users": users.json(),
+        "orders": orders.json(),
+        "stats": stats.json(),
+    }`} filename="main.py" />
         </section>
       </ScrollReveal>
 
       <Separator className="my-8" />
 
+      {/* Go Deeper: run_in_threadpool */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Running Blocking Code</h2>
-          <p className="text-muted-foreground mb-4">When you need to run blocking code in an async endpoint, use run_in_threadpool.</p>
+          <h2 className="text-2xl font-semibold mb-4">Go Deeper: Running Blocking Code Safely</h2>
+          <p className="text-muted-foreground mb-4">
+            Sometimes you&apos;re stuck with a blocking library. Maybe it&apos;s a legacy SDK, or
+            CPU-intensive image processing. You can offload it to a thread pool from
+            an async endpoint using <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">run_in_threadpool</code>.
+          </p>
           <CodeBlock code={`from starlette.concurrency import run_in_threadpool
 
 def cpu_intensive_task(data: list) -> dict:
-    # Heavy computation
+    # Heavy computation — no async version available
     result = process(data)
     return result
 
 @app.post("/process")
 async def process_data(data: list[int]):
+    # Offload to thread pool — event loop stays free
     result = await run_in_threadpool(cpu_intensive_task, data)
     return result`} filename="main.py" />
+
+          <ConversationalCallout type="insight" className="mt-4">
+            <p>
+              This is exactly what FastAPI does automatically for plain{" "}
+              <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">def</code> endpoints.
+              So if your entire endpoint is blocking code, just use{" "}
+              <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">def</code> instead of{" "}
+              <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">async def</code> — less
+              boilerplate, same result.
+            </p>
+          </ConversationalCallout>
         </section>
       </ScrollReveal>
+
+      <WhatYouJustLearned
+        points={[
+          "asyncio.gather runs multiple async operations concurrently — total time equals the slowest, not the sum",
+          "run_in_threadpool offloads blocking code to a thread from an async context",
+          "If everything in your endpoint is blocking, just use def — FastAPI handles threading for you",
+        ]}
+        section="advanced patterns"
+        className="mb-8"
+      />
 
       <Separator className="my-8" />
 
@@ -103,6 +253,39 @@ async def process_data(data: list[int]):
           <SyncAsyncRace />
         </section>
       </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      {/* Mental Model Challenge */}
+      <MentalModelChallenge
+        question="If you define def my_endpoint() (no async), does FastAPI block the event loop when it runs?"
+        options={[
+          {
+            label: "Yes — def endpoints always block the event loop",
+            correct: false,
+            explanation: "FastAPI is smarter than that! It handles def endpoints specially.",
+          },
+          {
+            label: "No — FastAPI runs def endpoints in a thread pool automatically",
+            correct: true,
+            explanation: "Exactly! FastAPI detects plain def and routes it to a thread pool, keeping the event loop free.",
+          },
+          {
+            label: "It depends on what libraries the endpoint uses",
+            correct: false,
+            explanation: "For def endpoints, FastAPI always uses a thread pool regardless of what's inside.",
+          },
+        ]}
+        hint="Think about what FastAPI does differently for def vs async def."
+        answer="No! FastAPI is smart about this. It runs sync (def) endpoints in a thread pool automatically, so they don't block the event loop. It's actually the async def + blocking call combo that causes problems. If you're using blocking libraries (requests, time.sleep), a regular def endpoint is often BETTER than async def."
+        className="mb-8"
+      />
+
+      <AhaMoment
+        setup="So async def isn't always the 'better' choice?"
+        reveal="Right. async def is a contract — you're telling FastAPI 'I promise to never block the event loop.' If you break that promise by calling blocking code, you make things WORSE than plain def. The rule is simple: use async def only when every I/O call inside uses await. Otherwise, stick with def."
+        className="mb-8"
+      />
 
       <Separator className="my-8" />
 

@@ -9,6 +9,13 @@ import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { RoughHighlight } from "@/components/rough-highlight";
 import { AutoAnimateGrid } from "@/components/auto-animate-grid";
 import { ProjectExplorerViz } from "../_components/project-explorer-viz";
+import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
+import { ConversationalCallout } from "@/components/conversational-callout";
+import { SimpleFlow } from "@/components/simple-flow";
+import { WhatYouJustLearned } from "@/components/what-you-just-learned";
+import { MentalModelChallenge } from "@/components/mental-model-challenge";
+import { AhaMoment } from "@/components/aha-moment";
+import { FailureDeepDive } from "@/components/failure-deep-dive";
 
 const mistakes: Mistake[] = [
   {
@@ -84,24 +91,76 @@ export default function ProjectStructurePage() {
           delay={0.1}
           className="text-lg text-muted-foreground max-w-2xl"
         >
-          How to organize your FastAPI application as it grows from a single file to a production-ready project.
+          Your main.py is 2000 lines long. Your teammate just quit. Let&apos;s talk about how to organize a FastAPI project before it turns into a nightmare.
         </TextEffect>
       </div>
 
+      {/* 1. Failure hook */}
+      <WhatCouldGoWrong
+        scenario="Your FastAPI app is 2000 lines in a single main.py. A teammate needs to add a feature and spends 45 minutes just figuring out where anything lives."
+        error={`ImportError: cannot import name 'get_db' from partially initialized module 'main'\n(most likely due to a circular import)`}
+        errorType="ImportError"
+        accentColor="rose"
+        className="mb-8"
+      />
+
+      {/* 2. Bridge from failure to concept */}
+      <ConversationalCallout type="question" className="mb-8">
+        <p>
+          Circular imports. The error message that makes you question your life choices. But it&apos;s actually a symptom of a bigger problem: everything is in one file, and everything depends on everything else. The fix isn&apos;t just &quot;move some imports around&quot; — it&apos;s learning how to structure your project so dependencies flow in one direction.
+        </p>
+      </ConversationalCallout>
+
+      {/* 3. Mental model BEFORE code */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Single File is Fine (At First)</h2>
+          <h2 className="text-2xl font-semibold mb-4">The Transformation</h2>
           <p className="text-muted-foreground mb-4">
-            When you&apos;re learning FastAPI, a single <code className="text-sm bg-muted px-1.5 py-0.5 rounded">main.py</code> file is perfectly fine. Keep things simple until <RoughHighlight type="underline" color="#f43f5e">complexity demands structure</RoughHighlight>. But as your app grows beyond a handful of endpoints, you&apos;ll need to split things up.
+            Every growing FastAPI project goes through this journey. The question isn&apos;t <em>if</em> you&apos;ll need to split things up — it&apos;s <em>when</em>.
+          </p>
+          <SimpleFlow
+            steps={[
+              { label: "Single main.py", detail: "2000 lines, circular imports", status: "error" },
+              { label: "Split by responsibility", detail: "routers/, models/, schemas/" },
+              { label: "Modular structure", detail: "Clean, navigable, no conflicts", status: "success" },
+            ]}
+            accentColor="rose"
+            className="mb-4"
+          />
+        </section>
+      </ScrollReveal>
+
+      {/* 4. Checkpoint */}
+      <WhatYouJustLearned
+        points={[
+          "A single file works fine for learning — but it doesn't scale",
+          "Circular imports happen when files depend on each other in a loop",
+          "The fix is organizing code so dependencies flow in one direction",
+        ]}
+        section="Why structure matters"
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Single File Is Fine (At First)</h2>
+          <p className="text-muted-foreground mb-4">
+            When you&apos;re learning FastAPI, a single <code className="text-sm bg-muted px-1.5 py-0.5 rounded">main.py</code> is perfectly fine. Don&apos;t over-engineer. Keep it simple until <RoughHighlight type="underline" color="#f43f5e">complexity demands structure</RoughHighlight>. But once you&apos;re past 5-10 endpoints, you&apos;ll start feeling the pain.
           </p>
           <CodeBlock
-            code={`from fastapi import FastAPI
+            code={`# This is totally fine when you're starting out!
+from fastapi import FastAPI
 
 app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}`}
+    return {"message": "Hello World"}
+
+# But once you have 20 endpoints, 5 models, and 3 services...
+# things get messy fast.`}
             filename="main.py"
           />
         </section>
@@ -109,18 +168,19 @@ async def root():
 
       <Separator className="my-8" />
 
+      {/* 5. The recommended structure */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Recommended Structure</h2>
+          <h2 className="text-2xl font-semibold mb-4">The Recommended Structure</h2>
           <p className="text-muted-foreground mb-4">
             As your project grows, <RoughHighlight type="highlight" color="#f43f5e">organize code by responsibility</RoughHighlight>. Routers handle endpoints, schemas define data shapes, models map to <RoughHighlight type="box" color="#f43f5e">database tables</RoughHighlight>, and config manages settings.
           </p>
           <CodeBlock
             code={`my_api/
-├── main.py              # App entry point
+├── main.py              # App entry point — just wires things together
 ├── config.py            # Settings & env vars
 ├── requirements.txt     # Dependencies
-├── .env                 # Secrets (gitignored)
+├── .env                 # Secrets (gitignored!)
 ├── routers/
 │   ├── __init__.py
 │   ├── users.py         # /users endpoints
@@ -138,8 +198,15 @@ async def root():
         </section>
       </ScrollReveal>
 
+      <ConversationalCallout type="insight" className="mb-8">
+        <p>
+          Notice the pattern? Each folder has one job. <strong>routers/</strong> handles HTTP. <strong>schemas/</strong> handles data validation. <strong>models/</strong> handles the database. <strong>main.py</strong> just connects them. If someone asks &quot;where are the user endpoints?&quot; — the answer is always <code className="text-sm bg-muted px-1.5 py-0.5 rounded">routers/users.py</code>.
+        </p>
+      </ConversationalCallout>
+
       <Separator className="my-8" />
 
+      {/* Interactive visualization (KEEP as-is) */}
       <ScrollReveal>
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Explore: Interactive Project Tree</h2>
@@ -154,7 +221,7 @@ async def root():
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">What Goes Where</h2>
           <p className="text-muted-foreground mb-2">
-            Each directory has a clear responsibility:
+            Each directory has a clear job. Here&apos;s the rule of thumb:
           </p>
           <ul className="list-disc list-inside text-muted-foreground space-y-2">
             <li><strong>routers/</strong> — Endpoint definitions grouped by domain (users, items, auth)</li>
@@ -166,13 +233,24 @@ async def root():
         </section>
       </ScrollReveal>
 
+      <WhatYouJustLearned
+        points={[
+          "Organize by responsibility: routers, schemas, models, config",
+          "Each folder answers one question — 'where are the endpoints?' → routers/",
+          "main.py becomes the hub that wires everything together",
+        ]}
+        section="Project layout"
+        className="mb-8"
+      />
+
       <Separator className="my-8" />
 
+      {/* Wiring it together */}
       <ScrollReveal>
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Wiring It Together</h2>
           <p className="text-muted-foreground mb-4">
-            Your <code className="text-sm bg-muted px-1.5 py-0.5 rounded">main.py</code> becomes the central hub that imports and mounts all routers onto the main FastAPI app instance.
+            Your <code className="text-sm bg-muted px-1.5 py-0.5 rounded">main.py</code> becomes a thin hub. It creates the app, imports the routers, and mounts them. That&apos;s it — no business logic, no models, no schemas.
           </p>
           <CodeBlock
             code={`from fastapi import FastAPI
@@ -180,15 +258,92 @@ from routers import users, items
 
 app = FastAPI(title="My API", version="1.0.0")
 
+# Each router handles its own domain
 app.include_router(users.router, prefix="/users", tags=["Users"])
-app.include_router(items.router, prefix="/items", tags=["Items"])`}
+app.include_router(items.router, prefix="/items", tags=["Items"])
+
+# That's it. main.py is done.
+# All the real work happens in the router files.`}
             filename="main.py"
           />
         </section>
       </ScrollReveal>
 
+      <AhaMoment
+        setup="Why does include_router use a prefix? Can't I just define the full path in the router?"
+        reveal="You could — but then moving all user endpoints from /users to /api/v1/users means editing every single route. With a prefix on include_router, you change it in one place and every route in that router updates automatically. It's the same idea as not hardcoding values: single source of truth."
+        className="mb-8"
+      />
+
       <Separator className="my-8" />
 
+      {/* Failure deep dive — circular imports */}
+      <FailureDeepDive
+        title="The circular import trap"
+        scenario="You create a router file and import the app instance from main.py. Main.py also imports from the router. Python can't resolve the loop."
+        code={`# main.py
+from fastapi import FastAPI
+from routers.users import router  # imports from users.py
+
+app = FastAPI()
+app.include_router(router)
+
+# routers/users.py
+from main import app  # imports from main.py — CIRCULAR!
+
+@app.get("/users")
+async def get_users():
+    return []`}
+        error={`ImportError: cannot import name 'get_db' from partially initialized module 'main'
+(most likely due to a circular import)`}
+        explanation="main.py imports users.py, and users.py imports main.py. Python starts loading main.py, hits the import for users.py, starts loading that, hits the import for main.py (which isn't finished loading yet), and crashes."
+        fix="Never import the app instance in router files. Use APIRouter() instead — it's a mini-app that gets mounted onto the main app later."
+        fixCode={`# routers/users.py — use APIRouter, not the app instance
+from fastapi import APIRouter
+
+router = APIRouter()
+
+@router.get("/")  # This becomes /users/ when mounted
+async def get_users():
+    return []
+
+# main.py — import and mount
+from fastapi import FastAPI
+from routers.users import router
+
+app = FastAPI()
+app.include_router(router, prefix="/users")`}
+        filename="routers/users.py"
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      {/* Mental Model Challenge */}
+      <MentalModelChallenge
+        question="Your router imports from models, and models imports from database. Where should the DB engine live to avoid circular imports?"
+        options={[
+          { label: "In main.py alongside the app instance", correct: false, explanation: "This creates a risk of circular imports if any module imports from main.py." },
+          { label: "In models/__init__.py", correct: false, explanation: "This mixes concerns — models should define tables, not manage connections." },
+          { label: "In its own module like database.py or db/session.py", correct: true, explanation: "Exactly! A standalone module that doesn't import from your app code." },
+          { label: "In the router file that needs it", correct: false, explanation: "Multiple routers would need it, leading to duplication or circular dependencies." },
+        ]}
+        hint="Dependencies should flow in one direction, never form cycles."
+        answer="Put the DB engine in its own module (like database.py or db/session.py) that doesn't import from models or routers. Both models and routers can then import from it safely. The key rule: dependencies should flow one direction, never form cycles."
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      <AhaMoment
+        setup="How do I know when it's time to split main.py into multiple files? Is there a rule?"
+        reveal="There's no magic number, but here's a practical test: if you can't find a function in under 10 seconds, it's time to split. Most teams hit this wall around 10-15 endpoints or 300-500 lines. The pain of navigating a giant file always outweighs the pain of splitting it up. And it's way easier to split early than to untangle a 2000-line mess later."
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      {/* Key Points grid (KEEP existing) */}
       <ScrollReveal>
         <section>
           <h2 className="text-2xl font-semibold mb-4">Key Points</h2>
@@ -213,6 +368,7 @@ app.include_router(items.router, prefix="/items", tags=["Items"])`}
         </section>
       </ScrollReveal>
 
+      {/* CommonMistakes (KEEP existing) */}
       <CommonMistakes mistakes={mistakes} />
     </div>
   );

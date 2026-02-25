@@ -6,6 +6,13 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
 import { WebSocketViz } from "../_components/websocket-viz";
 import { HeartbeatViz } from "../_components/heartbeat-viz";
+import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
+import { AhaMoment } from "@/components/aha-moment";
+import { WhatYouJustLearned } from "@/components/what-you-just-learned";
+import { MentalModelChallenge } from "@/components/mental-model-challenge";
+import { ConversationalCallout } from "@/components/conversational-callout";
+import { FailureDeepDive } from "@/components/failure-deep-dive";
+import { SimpleFlow } from "@/components/simple-flow";
 
 export default function WebSocketsPage() {
   return (
@@ -16,35 +23,87 @@ export default function WebSocketsPage() {
           <Badge variant="outline">Real-Time</Badge>
         </div>
         <TextEffect preset="fade-in-blur" per="word" delay={0.1} className="text-lg text-muted-foreground max-w-2xl">
-          WebSockets provide a persistent, bidirectional connection between client and server. Unlike HTTP, both sides can send messages at any time — ideal for chat, live updates, and notifications.
+          You built a chat app. Two users connected. Messages went nowhere. Let&apos;s fix that.
         </TextEffect>
       </div>
 
+      {/* 1. Failure Hook */}
+      <WhatCouldGoWrong
+        scenario={`You build a chat app with WebSockets. Two users connect. User A sends a message. User B never receives it. You check the code — each WebSocket connection is independent. There's no built-in broadcast.`}
+        error={`# Your WebSocket endpoint:\n@app.websocket("/ws")\nasync def chat(websocket: WebSocket):\n    await websocket.accept()\n    while True:\n        data = await websocket.receive_text()\n        await websocket.send_text(f"You said: {data}")\n        # ← Only echoes back to the SAME user!\n        # User B never receives User A's messages.\n\n# User A sends: "Hello everyone!"\n# User A sees: "You said: Hello everyone!"\n# User B sees: ... nothing.`}
+        errorType="No Broadcast"
+        accentColor="indigo"
+        className="mb-8"
+      />
+
+      {/* 2. Bridge */}
+      <ConversationalCallout type="question" className="mb-8">
+        <p>
+          Why doesn&apos;t User B get the message? Because WebSocket connections are
+          completely isolated. Each client talks to the server through its own
+          private tunnel. If you want messages to reach other clients, you
+          need to build that yourself.
+        </p>
+      </ConversationalCallout>
+
+      {/* 3. Mental model — WebSocket vs HTTP */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">WebSocket vs HTTP</h2>
+          <h2 className="text-2xl font-semibold mb-4">WebSocket vs HTTP: Two Different Worlds</h2>
           <p className="text-muted-foreground mb-4">
-            HTTP is request-response: the client asks, the server answers, the connection closes. WebSockets upgrade an HTTP connection into a persistent tunnel where either side can push data at any time.
+            HTTP is like sending letters — you write one, send it, get a reply, done.
+            WebSockets are like a phone call — you connect once and both sides can
+            talk whenever they want.
           </p>
-          <CodeBlock code={`# HTTP: one request, one response
-# Client → GET /messages → Server responds → Connection closes
-# Client → GET /messages → Server responds → Connection closes
-# (polling = wasteful)
 
-# WebSocket: persistent connection
-# Client → Upgrade to WebSocket → Server accepts
-# Client ↔ Server (messages flow both ways, anytime)
-# Connection stays open until either side closes it`} filename="concept.py" />
+          <div className="space-y-6">
+            <div>
+              <p className="text-sm font-medium mb-2">HTTP (request-response):</p>
+              <SimpleFlow
+                steps={[
+                  { label: "Client sends request", detail: "GET /messages" },
+                  { label: "Server responds", detail: "Here's your data" },
+                  { label: "Connection closes", detail: "Done. Start over for next request.", status: "error" },
+                ]}
+                accentColor="indigo"
+              />
+            </div>
+            <div>
+              <p className="text-sm font-medium mb-2">WebSocket (persistent connection):</p>
+              <SimpleFlow
+                steps={[
+                  { label: "HTTP upgrade", detail: "Switch to WebSocket" },
+                  { label: "Connection open", detail: "Both sides can talk anytime", status: "success" },
+                  { label: "Messages flow", detail: "Client ↔ Server", status: "success" },
+                  { label: "Until close", detail: "Either side can end it", status: "neutral" },
+                ]}
+                accentColor="indigo"
+              />
+            </div>
+          </div>
         </section>
       </ScrollReveal>
 
+      <WhatYouJustLearned
+        points={[
+          "HTTP connections are one-shot: request, response, close",
+          "WebSocket connections stay open — either side can send messages at any time",
+          "Each WebSocket connection is independent — there's no built-in way to talk between connections",
+        ]}
+        section="websocket basics"
+        className="mb-8"
+      />
+
       <Separator className="my-8" />
 
+      {/* 5. Code — basic echo endpoint */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Basic WebSocket Endpoint</h2>
+          <h2 className="text-2xl font-semibold mb-4">A Basic WebSocket: Echo Server</h2>
           <p className="text-muted-foreground mb-4">
-            Use the <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">@app.websocket()</code> decorator to create a WebSocket endpoint. The lifecycle is: accept, send/receive in a loop, then close.
+            Let&apos;s start with the simplest possible WebSocket — it accepts a connection,
+            listens for messages, and echoes them back. This is exactly the &quot;broken&quot; chat
+            from the hook, but it&apos;s a perfect starting point.
           </p>
           <CodeBlock code={`from fastapi import FastAPI, WebSocket
 
@@ -52,22 +111,25 @@ app = FastAPI()
 
 @app.websocket("/ws")
 async def websocket_endpoint(ws: WebSocket):
-    await ws.accept()
+    await ws.accept()  # Step 1: accept the connection
     while True:
-        # Wait for a message from the client
+        # Step 2: wait for a message
         data = await ws.receive_text()
-        # Echo it back
-        await ws.send_text(f"You said: {data}")`} filename="main.py" />
+        # Step 3: send something back
+        await ws.send_text(f"You said: {data}")
+    # This loops forever until the client disconnects`} filename="main.py" />
         </section>
       </ScrollReveal>
 
       <Separator className="my-8" />
 
+      {/* Handling disconnections */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Handling Disconnections</h2>
+          <h2 className="text-2xl font-semibold mb-4">When Users Disappear</h2>
           <p className="text-muted-foreground mb-4">
-            Clients can disconnect at any time. Wrap your receive loop in a try/except to handle <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">WebSocketDisconnect</code> gracefully.
+            Clients disconnect all the time — they close the tab, lose WiFi, or their
+            battery dies. Without handling this, your server throws an unhandled exception.
           </p>
           <CodeBlock code={`from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
@@ -81,17 +143,39 @@ async def websocket_endpoint(ws: WebSocket):
             data = await ws.receive_text()
             await ws.send_text(f"Echo: {data}")
     except WebSocketDisconnect:
+        # Client left — clean up gracefully
         print("Client disconnected")`} filename="main.py" />
+
+          <ConversationalCallout type="warning" className="mt-4">
+            <p>
+              Always wrap your WebSocket loop in try/except. Without it, every
+              disconnection becomes an unhandled exception in your logs. Noisy
+              and misleading.
+            </p>
+          </ConversationalCallout>
         </section>
       </ScrollReveal>
 
+      <WhatYouJustLearned
+        points={[
+          "Always call await ws.accept() before sending or receiving",
+          "WebSocket endpoints loop forever — they keep the connection alive",
+          "Wrap the loop in try/except WebSocketDisconnect to handle client disconnections cleanly",
+        ]}
+        section="websocket lifecycle"
+        className="mb-8"
+      />
+
       <Separator className="my-8" />
 
+      {/* The real fix: ConnectionManager */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Broadcasting to Multiple Clients</h2>
+          <h2 className="text-2xl font-semibold mb-4">The Fix: Broadcasting with a ConnectionManager</h2>
           <p className="text-muted-foreground mb-4">
-            A <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">ConnectionManager</code> class tracks active connections and broadcasts messages to all connected clients — the classic chat room pattern.
+            Remember the original problem? Messages only went back to the sender. To
+            build a real chat, you need to track all active connections and broadcast
+            messages to everyone. That&apos;s what a <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">ConnectionManager</code> does.
           </p>
           <CodeBlock code={`from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
@@ -109,6 +193,7 @@ class ConnectionManager:
         self.active_connections.remove(ws)
 
     async def broadcast(self, message: str):
+        # Send to EVERY connected client
         for connection in self.active_connections:
             await connection.send_text(message)
 
@@ -120,12 +205,29 @@ async def chat(ws: WebSocket):
     try:
         while True:
             data = await ws.receive_text()
+            # Now EVERYONE gets the message!
             await manager.broadcast(f"User says: {data}")
     except WebSocketDisconnect:
         manager.disconnect(ws)
         await manager.broadcast("A user has left the chat")`} filename="main.py" />
         </section>
       </ScrollReveal>
+
+      <AhaMoment
+        setup="Why doesn't FastAPI have a built-in broadcast? Seems like everyone needs it."
+        reveal="Because 'broadcast' means different things in different apps. A chat app broadcasts to a room. A stock ticker broadcasts to subscribers. A notification system broadcasts to specific users. FastAPI gives you the primitives (accept, send, receive) and lets you build the broadcast logic that fits YOUR use case. The ConnectionManager pattern above is just one approach — you could also use Redis Pub/Sub, channels, or rooms."
+        className="mb-8"
+      />
+
+      <WhatYouJustLearned
+        points={[
+          "A ConnectionManager tracks all active WebSocket connections in a list",
+          "broadcast() iterates through every connection and sends the message to each one",
+          "When a client disconnects, remove them from the list to avoid sending to dead connections",
+        ]}
+        section="broadcasting"
+        className="mb-8"
+      />
 
       <Separator className="my-8" />
 
@@ -142,22 +244,25 @@ async def chat(ws: WebSocket):
 
       <Separator className="my-8" />
 
+      {/* JSON messages */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">JSON Messages</h2>
+          <h2 className="text-2xl font-semibold mb-4">Sending Structured Data</h2>
           <p className="text-muted-foreground mb-4">
-            WebSockets can send and receive JSON directly using <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">receive_json()</code> and <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">send_json()</code>.
+            Real apps don&apos;t just send text strings. Use{" "}
+            <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">receive_json()</code> and{" "}
+            <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">send_json()</code> for structured data.
           </p>
           <CodeBlock code={`@app.websocket("/ws/updates")
 async def live_updates(ws: WebSocket):
     await ws.accept()
     try:
         while True:
-            # Receive structured data
+            # Receive structured data from client
             data = await ws.receive_json()
             # data = {"action": "subscribe", "channel": "prices"}
 
-            # Send structured response
+            # Send structured response back
             await ws.send_json({
                 "channel": data["channel"],
                 "price": 42.50,
@@ -170,43 +275,22 @@ async def live_updates(ws: WebSocket):
 
       <Separator className="my-8" />
 
+      {/* Go Deeper: Heartbeats */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Running with Uvicorn</h2>
+          <h2 className="text-2xl font-semibold mb-4">Go Deeper: Heartbeats &amp; Dead Connections</h2>
           <p className="text-muted-foreground mb-4">
-            Uvicorn supports WebSockets out of the box. Use the <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">--ws auto</code> flag to let Uvicorn pick the best WebSocket implementation available.
-          </p>
-          <CodeBlock code={`# Default: Uvicorn uses websockets library
-uvicorn main:app --reload
-
-# Explicitly set WebSocket protocol implementation
-uvicorn main:app --ws auto        # Auto-detect best option
-uvicorn main:app --ws websockets  # Use websockets library
-uvicorn main:app --ws wsproto     # Use wsproto library
-
-# Production: with workers
-uvicorn main:app --host 0.0.0.0 --port 8000 --ws auto --workers 4`} filename="terminal" />
-        </section>
-      </ScrollReveal>
-
-      <Separator className="my-8" />
-
-      <ScrollReveal>
-        <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Heartbeats &amp; Keepalive</h2>
-          <p className="text-muted-foreground mb-4">
-            WebSocket connections can die silently — the client loses network, the browser tab crashes, or a proxy times out. Without heartbeats, the server holds onto dead connections forever, leaking memory and file descriptors.
+            WebSocket connections can die silently. The client loses WiFi, the browser
+            tab crashes, a proxy times out. Without heartbeats, your server holds onto
+            dead connections forever, leaking memory.
           </p>
           <p className="text-muted-foreground mb-4">
-            The WebSocket protocol has built-in <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">Ping</code> and <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">Pong</code> frames. The server sends a Ping, the client automatically responds with a Pong. If no Pong comes back within the timeout, the connection is considered dead.
+            Uvicorn handles protocol-level pings automatically. You just configure the interval:
           </p>
-          <CodeBlock code={`# Uvicorn handles ping/pong automatically:
+          <CodeBlock code={`# Uvicorn sends automatic keepalive pings:
 uvicorn main:app \\
-    --ws-ping-interval 20 \\    # Send a ping every 20 seconds
+    --ws-ping-interval 20 \\    # Ping every 20 seconds
     --ws-ping-timeout 20        # Close if no pong within 20 seconds
-
-# To disable keepalive pings (not recommended):
-uvicorn main:app --ws-ping-interval 0
 
 # The client's browser handles Pong responses automatically
 # — you don't need any client-side code for this.`} filename="terminal" />
@@ -227,11 +311,14 @@ uvicorn main:app --ws-ping-interval 0
 
       <Separator className="my-8" />
 
+      {/* Application-level heartbeats */}
       <ScrollReveal>
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Application-Level Heartbeats</h2>
           <p className="text-muted-foreground mb-4">
-            Uvicorn handles protocol-level pings, but sometimes you need application-level heartbeats — to detect stale sessions, refresh auth tokens, or measure latency.
+            Sometimes protocol-level pings aren&apos;t enough. You might need to detect
+            stale sessions, refresh auth tokens, or measure latency. Here&apos;s how to
+            add your own heartbeat logic:
           </p>
           <CodeBlock code={`import asyncio
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
@@ -267,11 +354,13 @@ async def websocket_endpoint(ws: WebSocket):
 
       <Separator className="my-8" />
 
+      {/* Stale connection cleanup */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Stale Connection Cleanup</h2>
+          <h2 className="text-2xl font-semibold mb-4">Cleaning Up Stale Connections</h2>
           <p className="text-muted-foreground mb-4">
-            With a <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">ConnectionManager</code>, you should periodically clean up connections that haven&apos;t responded to heartbeats.
+            With a <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">ConnectionManager</code>,
+            you should periodically close connections that haven&apos;t responded to heartbeats.
           </p>
           <CodeBlock code={`import time
 
@@ -302,6 +391,49 @@ class ConnectionManager:
                 pass  # Already dead`} filename="main.py" />
         </section>
       </ScrollReveal>
+
+      <WhatYouJustLearned
+        points={[
+          "Uvicorn handles protocol-level pings automatically with --ws-ping-interval",
+          "Application-level heartbeats let you detect stale sessions and measure latency",
+          "Track last_seen timestamps and periodically close connections that go silent",
+        ]}
+        section="heartbeats & cleanup"
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      {/* Mental Model Challenge */}
+      <MentalModelChallenge
+        question="What happens to a WebSocket connection if the server restarts? Does the client automatically reconnect?"
+        options={[
+          {
+            label: "Yes — WebSocket connections automatically reconnect",
+            correct: false,
+            explanation: "WebSocket has no built-in reconnection mechanism.",
+          },
+          {
+            label: "No — the client needs explicit reconnection logic",
+            correct: true,
+            explanation: "When the server goes down, the connection just dies. The client must detect this and reconnect manually.",
+          },
+          {
+            label: "It depends on the WebSocket library being used",
+            correct: false,
+            explanation: "No WebSocket library auto-reconnects by default. It always needs explicit client-side logic.",
+          },
+        ]}
+        hint="Think about what the WebSocket protocol defines vs what you have to build yourself."
+        answer="No. WebSocket connections are not auto-reconnecting. When the server restarts, every connected client gets a close event (or just loses the connection). The client needs explicit reconnection logic — typically a loop that detects disconnection and calls new WebSocket() again with exponential backoff. This is one of the most commonly forgotten pieces of WebSocket implementations."
+        className="mb-8"
+      />
+
+      <AhaMoment
+        setup="If WebSockets don't auto-reconnect, won't every server deployment disconnect all users?"
+        reveal="Yes! Every deployment, every restart, every crash drops all WebSocket connections. That's why production WebSocket apps always need three things: client-side reconnection with exponential backoff, server-side state that survives restarts (like Redis), and graceful shutdown that warns clients before closing. Without all three, your real-time features are fragile."
+        className="mb-8"
+      />
 
       <Separator className="my-8" />
 

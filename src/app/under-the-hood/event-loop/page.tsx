@@ -8,6 +8,12 @@ import { TextEffect } from "@/components/ui/text-effect";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { RoughHighlight } from "@/components/rough-highlight";
 import { EventLoopAnimation } from "../_components/event-loop-animation";
+import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
+import { AhaMoment } from "@/components/aha-moment";
+import { WhatYouJustLearned } from "@/components/what-you-just-learned";
+import { MentalModelChallenge } from "@/components/mental-model-challenge";
+import { ConversationalCallout } from "@/components/conversational-callout";
+import { SimpleFlow } from "@/components/simple-flow";
 
 const mistakes: Mistake[] = [
   {
@@ -66,13 +72,33 @@ export default function EventLoopPage() {
           delay={0.1}
           className="text-lg text-muted-foreground max-w-2xl"
         >
-          The single-threaded engine that makes async work. It juggles thousands of requests by switching between tasks whenever one waits for I/O.
+          One line of code froze your entire API. Every endpoint, every user, everything. Let&apos;s understand why.
         </TextEffect>
       </div>
 
+      {/* 1. Failure Hook */}
+      <WhatCouldGoWrong
+        scenario={`You add time.sleep(10) to an async endpoint for "testing". Not just that endpoint — your ENTIRE API freezes for 10 seconds. Every single endpoint, every connected user. One line of code took down everything.`}
+        error={`@app.get("/slow")\nasync def slow_endpoint():\n    time.sleep(10)  # "Just for testing!"\n    return {"status": "done"}\n\n# Meanwhile, at the SAME time:\nGET /health → ... hanging\nGET /users → ... hanging\nGET /items → ... hanging\nGET / → ... hanging\n\n# ALL endpoints frozen. Not just /slow.\n# A single time.sleep() blocked the entire event loop.`}
+        errorType="Total Freeze"
+        accentColor="lime"
+        className="mb-8"
+      />
+
+      {/* 2. Bridge */}
+      <ConversationalCallout type="question" className="mb-8">
+        <p>
+          How can one <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">time.sleep(10)</code> in
+          one endpoint freeze <em>every other endpoint</em>? The answer is the event loop
+          — the single thread that powers all of your async code. Block it, and
+          everything stops.
+        </p>
+      </ConversationalCallout>
+
+      {/* 3. Mental model */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">What is the Event Loop?</h2>
+          <h2 className="text-2xl font-semibold mb-4">The Chef Analogy</h2>
           <p className="text-muted-foreground mb-4">
             Think of a chef in a kitchen. A synchronous chef cooks one dish
             completely before starting the next — if something needs to simmer
@@ -84,16 +110,36 @@ export default function EventLoopPage() {
             they check on dish 1. One chef, many dishes,{" "}
             <RoughHighlight type="highlight" color="rgba(132, 204, 22, 0.15)">no idle time</RoughHighlight>.
           </p>
-          <p className="text-muted-foreground">
-            Python&apos;s <code className="text-sm bg-muted px-1.5 py-0.5 rounded">asyncio</code> event
-            loop does exactly this with your FastAPI requests. It&apos;s a{" "}
-            <RoughHighlight type="underline" color="rgb(132, 204, 22)">single thread</RoughHighlight>{" "}
-            that runs a loop: check for ready tasks, execute them until
-            they <RoughHighlight type="circle" color="rgb(132, 204, 22)"><code className="text-sm bg-muted px-1.5 py-0.5 rounded">await</code></RoughHighlight> something, then
-            move on to the next task.
+          <p className="text-muted-foreground mb-4">
+            But here&apos;s the catch:{" "}
+            <RoughHighlight type="underline" color="rgb(132, 204, 22)">there&apos;s only ONE chef</RoughHighlight>.
+            If that chef gets stuck stirring a pot and <em>can&apos;t let go</em> (that&apos;s your{" "}
+            <code className="text-sm bg-muted px-1.5 py-0.5 rounded">time.sleep</code>), every other dish
+            burns. Every customer waits. The whole kitchen is frozen.
           </p>
+
+          <SimpleFlow
+            steps={[
+              { label: "Event loop picks up task", detail: "Your request" },
+              { label: "Runs until await", detail: "Does work, then yields" },
+              { label: "Switches to next task", detail: "While first awaits I/O", status: "success" },
+              { label: "I/O completes", detail: "Resumes original task", status: "success" },
+            ]}
+            accentColor="lime"
+            className="mt-4"
+          />
         </section>
       </ScrollReveal>
+
+      <WhatYouJustLearned
+        points={[
+          "The event loop is a single thread that juggles all your async tasks",
+          "When a task hits 'await', it pauses and the loop runs something else",
+          "If anything blocks without awaiting (like time.sleep), the entire loop freezes",
+        ]}
+        section="the event loop model"
+        className="mb-8"
+      />
 
       <Separator className="my-8" />
 
@@ -111,45 +157,61 @@ export default function EventLoopPage() {
 
       <Separator className="my-8" />
 
+      {/* Sync vs Async */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Sync vs Async — The Key Difference</h2>
+          <h2 className="text-2xl font-semibold mb-4">def vs async def — What Actually Happens</h2>
           <p className="text-muted-foreground mb-4">
-            With <code className="text-sm bg-muted px-1.5 py-0.5 rounded">def</code>, FastAPI runs
-            your handler in a thread pool — it works, but threads are expensive. With{" "}
-            <code className="text-sm bg-muted px-1.5 py-0.5 rounded">async def</code>, FastAPI runs
-            your handler directly on the event loop — lightweight and fast.
+            FastAPI treats these two differently. With{" "}
+            <code className="text-sm bg-muted px-1.5 py-0.5 rounded">def</code>, FastAPI is cautious — it
+            runs your handler in a thread pool so blocking is safe. With{" "}
+            <code className="text-sm bg-muted px-1.5 py-0.5 rounded">async def</code>, FastAPI trusts you — it
+            runs your handler directly on the event loop. Break that trust and you
+            freeze everything.
           </p>
           <CodeBlock
-            code={`# Synchronous — runs in a thread pool
+            code={`# Synchronous — runs in a thread pool (safe to block)
 @app.get("/sync")
 def get_users():
-    users = db.fetch_all()  # Blocks this thread
+    users = db.fetch_all()  # Blocks this thread, not the event loop
     return users
-    # FastAPI wraps this in a thread so it doesn't
-    # block the event loop, but threads are heavier
 
-# Asynchronous — runs on the event loop
+# Asynchronous — runs on the event loop (NEVER block!)
 @app.get("/async")
 async def get_users():
-    users = await db.fetch_all()  # Yields to event loop
-    return users
-    # While waiting for the DB, the event loop
-    # handles other requests — no extra threads needed`}
+    users = await db.fetch_all()  # Yields to event loop while waiting
+    return users`}
             filename="main.py"
           />
         </section>
       </ScrollReveal>
 
+      <AhaMoment
+        setup="Wait — so plain def endpoints are 'safer' than async def?"
+        reveal="In a way, yes! Plain def endpoints run in a thread pool, so even if they block, only that thread is affected. async def endpoints run directly on the event loop — block there and the ENTIRE server freezes. async def is more powerful (no thread overhead, true concurrency) but it comes with a contract: you must never block. That's why using the wrong library in an async endpoint is so devastating."
+        className="mb-8"
+      />
+
+      <WhatYouJustLearned
+        points={[
+          "def endpoints run in a thread pool — blocking is safe but uses more resources",
+          "async def endpoints run on the event loop — lightweight but must never block",
+          "The event loop trusts your async code to yield. Break that trust and everything stops.",
+        ]}
+        section="sync vs async execution"
+        className="mb-8"
+      />
+
       <Separator className="my-8" />
 
+      {/* What happens during await */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">What Happens During await</h2>
+          <h2 className="text-2xl font-semibold mb-4">What Happens at Every await</h2>
           <p className="text-muted-foreground mb-4">
             When your code hits <code className="text-sm bg-muted px-1.5 py-0.5 rounded">await</code>,
-            the event loop suspends that coroutine and is free to run other tasks. When the
-            I/O operation completes, the loop resumes your code right where it left off.
+            the event loop pauses your function and is free to run other tasks. When the
+            I/O completes, the loop picks up right where you left off.
           </p>
           <CodeBlock
             code={`@app.get("/dashboard")
@@ -157,15 +219,15 @@ async def get_dashboard():
     # 1. Event loop starts running this function
 
     user = await get_current_user()
-    # 2. Suspends here → event loop runs other requests
-    # 3. User data arrives → resumes here
+    # 2. Pauses here → event loop handles other requests
+    # 3. User data arrives → resumes right here
 
     posts = await db.fetch_posts(user.id)
-    # 4. Suspends again → event loop runs other requests
-    # 5. Posts arrive → resumes here
+    # 4. Pauses again → event loop handles other requests
+    # 5. Posts arrive → resumes right here
 
     return {"user": user, "posts": posts}
-    # 6. Response sent, event loop moves to next task`}
+    # 6. Done. Event loop moves to the next task.`}
             filename="main.py"
           />
         </section>
@@ -173,21 +235,23 @@ async def get_dashboard():
 
       <Separator className="my-8" />
 
+      {/* Go Deeper: CPU-bound work */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Common Pitfalls</h2>
+          <h2 className="text-2xl font-semibold mb-4">Go Deeper: CPU-Bound Work</h2>
           <p className="text-muted-foreground mb-4">
-            The event loop is single-threaded. If you block it with CPU-heavy work
-            or synchronous I/O, every other request has to wait.
+            Not all blocking is I/O. Heavy computation (image processing, ML inference)
+            also blocks the event loop because there&apos;s no await to yield. The fix: offload
+            it to a thread pool.
           </p>
           <CodeBlock
-            code={`# BAD: CPU-bound work blocks the event loop
+            code={`# BAD: CPU work blocks the event loop
 @app.get("/process")
 async def process_image():
-    result = heavy_computation()  # No await — blocks everything!
+    result = heavy_computation()  # No await — freezes everything!
     return result
 
-# GOOD: Run CPU work in a thread pool
+# GOOD: Offload to a thread pool
 from fastapi.concurrency import run_in_threadpool
 
 @app.get("/process")
@@ -196,8 +260,50 @@ async def process_image():
     return result  # Event loop stayed free the whole time`}
             filename="main.py"
           />
+
+          <ConversationalCallout type="insight" className="mt-4">
+            <p>
+              Or just use <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">def</code> for
+              the endpoint! FastAPI will run it in a thread pool automatically. No need for
+              the <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">run_in_threadpool</code> dance
+              if your entire endpoint is synchronous work.
+            </p>
+          </ConversationalCallout>
         </section>
       </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      {/* Mental Model Challenge */}
+      <MentalModelChallenge
+        question="If the event loop is single-threaded, how can FastAPI handle multiple requests concurrently?"
+        options={[
+          {
+            label: "It can't — async is just a lie, requests are processed one at a time",
+            correct: false,
+            explanation: "Async isn't parallel, but it IS concurrent. There's a difference!",
+          },
+          {
+            label: "It uses cooperative multitasking — tasks yield at every await",
+            correct: true,
+            explanation: "Exactly! When one task awaits I/O, the loop switches to another. It's concurrent without being parallel.",
+          },
+          {
+            label: "It secretly uses multiple threads behind the scenes",
+            correct: false,
+            explanation: "The event loop itself is single-threaded. Threads are used only for def endpoints and run_in_threadpool.",
+          },
+        ]}
+        hint="Think about what happens between the request arriving and the I/O completing."
+        answer="The event loop uses cooperative multitasking. When an async function hits an 'await' (like awaiting a database query or HTTP request), it pauses and lets another request run. It's like a chef working on multiple dishes — while one is in the oven (waiting for I/O), the chef works on the next. The key word is 'cooperative' — if any task doesn't yield (like time.sleep which never awaits), it blocks the entire kitchen."
+        className="mb-8"
+      />
+
+      <AhaMoment
+        setup="So concurrency and parallelism aren't the same thing?"
+        reveal="No! Parallelism is doing multiple things at the same time (multiple chefs). Concurrency is doing multiple things by interleaving (one chef, many dishes). The event loop gives you concurrency, not parallelism. For I/O-bound work (API calls, database queries), concurrency is actually MORE efficient than parallelism because there's no thread overhead, no context switching, and no race conditions."
+        className="mb-8"
+      />
 
       <Separator className="my-8" />
 

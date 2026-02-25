@@ -9,6 +9,13 @@ import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { RoughHighlight } from "@/components/rough-highlight";
 import { AutoAnimateGrid } from "@/components/auto-animate-grid";
 import { EnvConfigViz } from "../_components/env-config-viz";
+import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
+import { ConversationalCallout } from "@/components/conversational-callout";
+import { SimpleFlow } from "@/components/simple-flow";
+import { WhatYouJustLearned } from "@/components/what-you-just-learned";
+import { MentalModelChallenge } from "@/components/mental-model-challenge";
+import { AhaMoment } from "@/components/aha-moment";
+import { FailureDeepDive } from "@/components/failure-deep-dive";
 
 const mistakes: Mistake[] = [
   {
@@ -67,29 +74,79 @@ export default function EnvironmentVariablesPage() {
           delay={0.1}
           className="text-lg text-muted-foreground max-w-2xl"
         >
-          Keep secrets out of your code with .env files and pydantic-settings for type-safe configuration.
+          Your database password is in your source code. Someone just pushed it to GitHub. You have about 30 minutes before things get bad.
         </TextEffect>
       </div>
 
+      {/* 1. Failure hook */}
+      <WhatCouldGoWrong
+        scenario="You push your code to GitHub. Within 30 minutes, someone has scraped your DATABASE_URL from the commit history and is running queries against your production database."
+        error={`[SECURITY ALERT] GitHub detected a potential secret in your repository.\nCommit: a1b2c3d — "Add database config"\nFile: main.py — Line 5: DATABASE_URL = "postgresql://admin:p@ssw0rd@prod-db.example.com:5432/myapp"`}
+        errorType="Security Alert"
+        accentColor="rose"
+        className="mb-8"
+      />
+
+      {/* 2. Bridge from failure to concept */}
+      <ConversationalCallout type="question" className="mb-8">
+        <p>
+          How does this happen? You write a database URL in your code because you need it to work. You push to GitHub because you need to deploy. And now the entire internet can see your production password. The fix isn&apos;t &quot;be more careful&quot; — it&apos;s to keep secrets out of your code entirely.
+        </p>
+      </ConversationalCallout>
+
+      {/* 3. Mental model BEFORE code */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Why Not Hardcode Secrets?</h2>
+          <h2 className="text-2xl font-semibold mb-4">The Flow: Secrets Stay Outside Code</h2>
           <p className="text-muted-foreground mb-4">
-            Hardcoding database passwords, API keys, and <RoughHighlight type="highlight" color="#f43f5e">secret tokens</RoughHighlight> directly in your source code is a <RoughHighlight type="underline" color="#f43f5e">major security risk</RoughHighlight>. Your code gets pushed to GitHub, shared with teammates, and stored in version control history forever.
+            Here&apos;s the key idea: your code reads configuration from the environment, never from hardcoded values. This way, secrets live in a file that never gets committed.
+          </p>
+          <SimpleFlow
+            steps={[
+              { label: ".env file", detail: "Secrets live here (gitignored)" },
+              { label: "load_dotenv() or pydantic-settings", detail: "Reads the file" },
+              { label: "Environment variables", detail: "Available to your app" },
+              { label: "Your code", detail: "Uses settings.database_url" },
+            ]}
+            accentColor="rose"
+            className="mb-4"
+          />
+        </section>
+      </ScrollReveal>
+
+      {/* 4. Checkpoint */}
+      <WhatYouJustLearned
+        points={[
+          "Secrets in source code get exposed when you push to GitHub",
+          "Environment variables keep configuration outside your codebase",
+          ".env files store secrets locally — and get gitignored so they're never committed",
+        ]}
+        section="Why env vars matter"
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Why Not Just Hardcode It?</h2>
+          <p className="text-muted-foreground mb-4">
+            Beyond security, there&apos;s a practical reason: <RoughHighlight type="highlight" color="#f43f5e">different environments need different values</RoughHighlight>. Your local database URL isn&apos;t the same as staging or production. Hardcoding means changing code every time you deploy somewhere new.
           </p>
           <p className="text-muted-foreground">
-            Beyond security, different environments need different values. Your local database URL is not the same as staging or production. <RoughHighlight type="box" color="#f43f5e">Environment variables</RoughHighlight> let you change configuration without changing code.
+            <RoughHighlight type="box" color="#f43f5e">Environment variables</RoughHighlight> let you change configuration without changing code. Same codebase, different settings per environment.
           </p>
         </section>
       </ScrollReveal>
 
       <Separator className="my-8" />
 
+      {/* 5. Code walkthrough — .env file */}
       <ScrollReveal>
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">The .env File</h2>
           <p className="text-muted-foreground mb-4">
-            A <code className="text-sm bg-muted px-1.5 py-0.5 rounded">.env</code> file stores configuration as key-value pairs. It lives in your project root and should never be committed to version control.
+            A <code className="text-sm bg-muted px-1.5 py-0.5 rounded">.env</code> file stores your configuration as simple key-value pairs. It lives in your project root and should <strong>never</strong> be committed to version control.
           </p>
           <CodeBlock
             code={`DATABASE_URL=postgresql://user:password@localhost/mydb
@@ -98,9 +155,11 @@ DEBUG=true
 API_VERSION=v1`}
             filename=".env"
           />
-          <p className="text-muted-foreground mt-4">
-            <strong>Important:</strong> Always add <code className="text-sm bg-muted px-1.5 py-0.5 rounded">.env</code> to your <code className="text-sm bg-muted px-1.5 py-0.5 rounded">.gitignore</code> file so it never gets committed to your repository!
-          </p>
+          <ConversationalCallout type="warning" className="mt-4">
+            <p>
+              Add <code className="text-sm bg-muted px-1.5 py-0.5 rounded">.env</code> to your <code className="text-sm bg-muted px-1.5 py-0.5 rounded">.gitignore</code> <em>before your first commit</em>. If you add it after, the file is already in your git history — and removing it from history is a pain.
+            </p>
+          </ConversationalCallout>
         </section>
       </ScrollReveal>
 
@@ -110,52 +169,110 @@ API_VERSION=v1`}
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Loading with python-dotenv</h2>
           <p className="text-muted-foreground mb-4">
-            The <code className="text-sm bg-muted px-1.5 py-0.5 rounded">python-dotenv</code> package reads your .env file and makes the values available through <code className="text-sm bg-muted px-1.5 py-0.5 rounded">os.getenv()</code>. Simple and straightforward, but no type validation.
+            The simplest approach: <code className="text-sm bg-muted px-1.5 py-0.5 rounded">python-dotenv</code> reads your .env file and makes the values available through <code className="text-sm bg-muted px-1.5 py-0.5 rounded">os.getenv()</code>. It works, but there&apos;s no type validation — everything comes back as a string.
           </p>
           <CodeBlock
             code={`from dotenv import load_dotenv
 import os
 
-load_dotenv()  # Load .env file
+load_dotenv()  # Load .env file into environment
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 SECRET_KEY = os.getenv("SECRET_KEY", "fallback-key")
+# Careful — this is a string, not a boolean!
 DEBUG = os.getenv("DEBUG", "false").lower() == "true"`}
             filename="config.py"
           />
         </section>
       </ScrollReveal>
 
+      <AhaMoment
+        setup="Wait — os.getenv('DEBUG') returns the string 'true', not the boolean True?"
+        reveal="Yep! Environment variables are always strings. That's why os.getenv('DEBUG') == True is always False — you're comparing a string to a boolean. You need to parse it yourself, like checking if the value is 'true'. This is exactly why pydantic-settings is better: it handles type conversion automatically."
+        className="mb-8"
+      />
+
       <Separator className="my-8" />
 
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Pydantic Settings (Recommended)</h2>
+          <h2 className="text-2xl font-semibold mb-4">Pydantic Settings (The Better Way)</h2>
           <p className="text-muted-foreground mb-4">
-            For production apps, <code className="text-sm bg-muted px-1.5 py-0.5 rounded">pydantic-settings</code> is the recommended approach. It reads environment variables, validates their types, provides defaults, and gives you a clean settings object with autocomplete support.
+            For production apps, <code className="text-sm bg-muted px-1.5 py-0.5 rounded">pydantic-settings</code> is the move. It reads your .env file, validates types automatically, provides defaults, and gives you a clean settings object with IDE autocomplete.
           </p>
           <CodeBlock
             code={`from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    database_url: str
-    secret_key: str
-    debug: bool = False
-    api_version: str = "v1"
+    database_url: str          # Required — app crashes if missing
+    secret_key: str            # Required — no forgetting this one
+    debug: bool = False        # Optional with default — auto-parsed!
+    api_version: str = "v1"    # Optional with default
 
     class Config:
         env_file = ".env"
 
 settings = Settings()
 # settings.database_url → reads DATABASE_URL from .env
-# Automatic type validation!`}
+# settings.debug → True (auto-converted from string "true")
+# Typo in your env var name? Pydantic catches it at startup.`}
             filename="config.py"
           />
         </section>
       </ScrollReveal>
 
+      <WhatYouJustLearned
+        points={[
+          "python-dotenv is simple but everything is a string — you parse types yourself",
+          "pydantic-settings validates types, provides defaults, and catches missing vars at startup",
+          "Both read from .env files — pydantic-settings just does more for you",
+        ]}
+        section="Loading config"
+        className="mb-8"
+      />
+
       <Separator className="my-8" />
 
+      {/* Go Deeper: override behavior */}
+      <FailureDeepDive
+        title="The sneaky override trap"
+        scenario="You set DATABASE_URL in both your .env file and a Docker environment variable. Your app uses the wrong one and you spend an hour debugging."
+        code={`# .env file
+DATABASE_URL=postgresql://user:pass@localhost/dev
+
+# Docker compose
+environment:
+  - DATABASE_URL=postgresql://user:pass@prod-db/prod
+
+# config.py
+from dotenv import load_dotenv
+load_dotenv()  # Which value wins?`}
+        error={`# You expected the Docker value (prod)
+# But load_dotenv loaded the .env value (dev)
+# ...or did it?`}
+        explanation="By default, python-dotenv does NOT override existing environment variables. If DATABASE_URL is already set in your shell or Docker, the .env value is ignored. But with pydantic-settings, the behavior depends on your configuration."
+        fix="Be explicit about override behavior. Use load_dotenv(override=True) if you want .env to always win, or leave it as default if shell/Docker should take priority."
+        fixCode={`# Option 1: .env file overrides everything
+from dotenv import load_dotenv
+load_dotenv(override=True)  # .env always wins
+
+# Option 2: Shell/Docker vars take priority (default)
+load_dotenv()  # Existing env vars are NOT overwritten
+
+# Option 3: With pydantic-settings (recommended)
+class Settings(BaseSettings):
+    database_url: str
+
+    class Config:
+        env_file = ".env"
+        # Env vars from shell/Docker take priority over .env by default`}
+        filename="config.py"
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      {/* Interactive visualization (KEEP as-is) */}
       <ScrollReveal>
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Try It: Config Validator</h2>
@@ -166,6 +283,31 @@ settings = Settings()
 
       <Separator className="my-8" />
 
+      {/* Mental Model Challenge */}
+      <MentalModelChallenge
+        question="If you set DATABASE_URL in both your .env file and your shell environment, which one does python-dotenv use by default?"
+        options={[
+          { label: "The .env file value always wins", correct: false, explanation: "That's only true if you pass override=True to load_dotenv()." },
+          { label: "The shell environment value wins", correct: true, explanation: "Right! By default, load_dotenv() won't overwrite variables that already exist in the environment." },
+          { label: "It raises an error about the conflict", correct: false, explanation: "python-dotenv doesn't detect or report conflicts — it silently picks one." },
+          { label: "The last one loaded wins", correct: false, explanation: "It's not about loading order — it's about whether existing env vars get overwritten." },
+        ]}
+        hint="Think about what 'override' means as a parameter..."
+        answer="By default, python-dotenv does NOT override existing environment variables. So the shell value wins. Use override=True in load_dotenv() if you want the .env file to take priority. This trips people up in Docker containers where env vars are set both ways."
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      <AhaMoment
+        setup="If I accidentally commit my .env file, can I just delete it and push again?"
+        reveal="Deleting the file removes it from the current code, but it's still in your git history. Anyone can see it by looking at past commits. You need to either rewrite git history (with git filter-branch or BFG Repo Cleaner) or — more practically — rotate ALL the secrets that were exposed. Change every password, regenerate every API key. Prevention is way easier than cleanup."
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      {/* Key Points grid (KEEP existing) */}
       <ScrollReveal>
         <section>
           <h2 className="text-2xl font-semibold mb-4">Key Points</h2>
@@ -190,6 +332,7 @@ settings = Settings()
         </section>
       </ScrollReveal>
 
+      {/* CommonMistakes (KEEP existing) */}
       <CommonMistakes mistakes={mistakes} />
     </div>
   );

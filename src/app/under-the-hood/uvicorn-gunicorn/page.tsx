@@ -7,6 +7,12 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { WorkerArchitectureViz } from "../_components/worker-architecture-viz";
+import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
+import { AhaMoment } from "@/components/aha-moment";
+import { WhatYouJustLearned } from "@/components/what-you-just-learned";
+import { MentalModelChallenge } from "@/components/mental-model-challenge";
+import { ConversationalCallout } from "@/components/conversational-callout";
+import { SimpleFlow } from "@/components/simple-flow";
 
 const mistakes: Mistake[] = [
   {
@@ -57,22 +63,70 @@ export default function UvicornGunicornPage() {
           delay={0.1}
           className="text-lg text-muted-foreground max-w-2xl"
         >
-          Uvicorn runs your app. Gunicorn manages multiple copies of it. Together, they make FastAPI production-ready across all your CPU cores.
+          Your API crashed at 3 AM. No auto-restart. No backup process. Four hours of downtime before anyone noticed.
         </TextEffect>
       </div>
 
+      {/* 1. Failure Hook */}
+      <WhatCouldGoWrong
+        scenario={`You deploy with "uvicorn main:app" in production. It works fine until your single process crashes after a memory leak. No auto-restart. No load distribution. Your entire API is down and nobody knows.`}
+        error={`# Production server (single uvicorn process):\n$ uvicorn main:app --host 0.0.0.0 --port 8000\n\n# 3:47 AM — Process crashes due to memory leak\nMemoryError: Unable to allocate 512 MiB\n\n# No process manager → No auto-restart\n# API is DOWN. No one is alerted.\n# Users see: ERR_CONNECTION_REFUSED\n# Duration of outage: 4 hours (until someone checks manually)`}
+        errorType="Single Point of Failure"
+        accentColor="lime"
+        className="mb-8"
+      />
+
+      {/* 2. Bridge */}
+      <ConversationalCallout type="question" className="mb-8">
+        <p>
+          One process. One point of failure. When it dies, everything dies.
+          How do production apps avoid this? They use a process manager to
+          keep multiple copies of the app running — and restart any that crash.
+        </p>
+      </ConversationalCallout>
+
+      {/* 3. Mental model */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">What is Uvicorn?</h2>
+          <h2 className="text-2xl font-semibold mb-4">Two Tools, Two Jobs</h2>
           <p className="text-muted-foreground mb-4">
-            Uvicorn is a lightning-fast ASGI server. It&apos;s the process that
-            actually runs your FastAPI application — listening for connections,
-            parsing HTTP, and feeding requests into your async handlers.
+            Uvicorn and Gunicorn do completely different things. Understanding which does
+            what is the key to a production-ready deployment.
           </p>
+
+          <SimpleFlow
+            steps={[
+              { label: "Gunicorn", detail: "The manager. Spawns workers, monitors health, restarts crashes.", status: "neutral" },
+              { label: "Uvicorn Worker 1", detail: "Runs your app. Handles requests.", status: "success" },
+              { label: "Uvicorn Worker 2", detail: "Another copy. Same app.", status: "success" },
+              { label: "Uvicorn Worker 3", detail: "Yet another. Load distributed.", status: "success" },
+            ]}
+            direction="vertical"
+            accentColor="lime"
+          />
+        </section>
+      </ScrollReveal>
+
+      <WhatYouJustLearned
+        points={[
+          "Uvicorn is the ASGI server — it runs your app, handles HTTP/WebSocket, manages the event loop",
+          "Gunicorn is the process manager — it spawns workers, monitors health, restarts crashes",
+          "Together they give you multi-core utilization and fault tolerance",
+        ]}
+        section="uvicorn vs gunicorn"
+        className="mb-8"
+      />
+
+      <Separator className="my-8" />
+
+      {/* Uvicorn */}
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Uvicorn: The Engine</h2>
           <p className="text-muted-foreground mb-4">
-            Think of Uvicorn as the engine of a car. It does the actual work of
-            processing requests using Python&apos;s event loop. One Uvicorn process
-            can handle thousands of concurrent connections.
+            Uvicorn is the process that actually runs your FastAPI app. It listens
+            for connections, parses HTTP, and feeds requests to your async handlers.
+            Think of it as the engine of a car — it does the actual work.
           </p>
           <CodeBlock
             code={`# Run your FastAPI app with Uvicorn
@@ -86,23 +140,27 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 # --port    → listen on port 8000`}
             filename="terminal"
           />
+
+          <ConversationalCallout type="warning" className="mt-4">
+            <p>
+              A single Uvicorn process can handle thousands of concurrent connections.
+              But it&apos;s still <strong>one process</strong>. If it crashes, your API is dead.
+              If you have 4 CPU cores, you&apos;re only using one of them.
+            </p>
+          </ConversationalCallout>
         </section>
       </ScrollReveal>
 
       <Separator className="my-8" />
 
+      {/* Gunicorn */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">What is Gunicorn?</h2>
+          <h2 className="text-2xl font-semibold mb-4">Gunicorn: The Fleet Manager</h2>
           <p className="text-muted-foreground mb-4">
-            Gunicorn (Green Unicorn) is a process manager. It doesn&apos;t run your
-            app directly — it spawns and manages multiple worker processes, each
-            running their own copy of your application.
-          </p>
-          <p className="text-muted-foreground mb-4">
-            Think of Gunicorn as a fleet manager. It doesn&apos;t drive any cars
-            itself, but it manages a fleet of drivers (workers), handling
-            recruitment, health checks, and replacement if one crashes.
+            Gunicorn doesn&apos;t run your app directly. It spawns multiple worker processes,
+            each running their own copy of your app. It&apos;s the fleet manager — it doesn&apos;t
+            drive any cars, but it manages the drivers.
           </p>
           <CodeBlock
             code={`# Gunicorn with Uvicorn workers
@@ -114,19 +172,37 @@ gunicorn main:app -k uvicorn.workers.UvicornWorker -w 4
 # -w 4     → spawn 4 worker processes
 
 # Each worker is a separate process with its own event loop
-# 4 workers on 4 cores = full CPU utilization`}
+# 4 workers on 4 cores = full CPU utilization
+# Worker crashes? Gunicorn restarts it automatically.`}
             filename="terminal"
           />
         </section>
       </ScrollReveal>
 
+      <AhaMoment
+        setup="Why not just run 4 separate uvicorn commands manually?"
+        reveal="You could, but who restarts them when they crash? Who monitors their health? Who distributes incoming connections? Gunicorn does all of this automatically. It's a battle-tested process manager that handles spawning, health checks, graceful restarts, and signal handling (SIGTERM for shutdown, SIGHUP for reload). Doing this manually is error-prone and fragile."
+        className="mb-8"
+      />
+
+      <WhatYouJustLearned
+        points={[
+          "Uvicorn alone = great for dev, risky for production (single point of failure)",
+          "Gunicorn + Uvicorn workers = multi-core utilization with automatic crash recovery",
+          "Gunicorn handles the hard stuff: spawning, health checks, graceful restarts",
+        ]}
+        section="production deployment"
+        className="mb-8"
+      />
+
       <Separator className="my-8" />
 
+      {/* When to use which */}
       <ScrollReveal>
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">When to Use Which</h2>
           <p className="text-muted-foreground mb-4">
-            The right choice depends on your deployment context.
+            The right choice depends on where you&apos;re deploying. Here&apos;s the cheat sheet:
           </p>
           <div className="space-y-3">
             <div className="rounded-lg border p-4">
@@ -190,16 +266,24 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
         </section>
       </ScrollReveal>
 
+      <ConversationalCallout type="story" className="mb-8">
+        <p>
+          The Docker approach is increasingly popular. Instead of one server running
+          4 Gunicorn workers, you run 4 containers each with one Uvicorn process.
+          Kubernetes handles the &quot;process management&quot; that Gunicorn would. If a container
+          crashes, Kubernetes restarts it. Same concept, different level.
+        </p>
+      </ConversationalCallout>
+
       <Separator className="my-8" />
 
+      {/* Full production command */}
       <ScrollReveal>
         <section className="mb-10">
-          <h2 className="text-2xl font-semibold mb-4">The Gunicorn + Uvicorn Pattern</h2>
+          <h2 className="text-2xl font-semibold mb-4">Go Deeper: The Full Production Setup</h2>
           <p className="text-muted-foreground mb-4">
-            This is the classic production setup: Gunicorn as the process manager,
-            Uvicorn as the ASGI worker. Gunicorn handles worker lifecycle (spawning,
-            health checks, graceful restarts) while each Uvicorn worker handles
-            actual request processing.
+            Here&apos;s what a production Gunicorn + Uvicorn deployment looks like with
+            all the important options spelled out:
           </p>
           <CodeBlock
             code={`# Full production command with all options
@@ -229,6 +313,16 @@ gunicorn main:app \\
         </section>
       </ScrollReveal>
 
+      <WhatYouJustLearned
+        points={[
+          "Development: uvicorn with --reload. Production: gunicorn + uvicorn workers.",
+          "Docker changes the game: one process per container, scale with orchestration",
+          "--timeout, --graceful-timeout, and logging flags are critical for production",
+        ]}
+        section="deployment patterns"
+        className="mb-8"
+      />
+
       <Separator className="my-8" />
 
       {/* Interactive: Worker Architecture Visualizer */}
@@ -242,6 +336,39 @@ gunicorn main:app \\
           <WorkerArchitectureViz />
         </section>
       </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      {/* Mental Model Challenge */}
+      <MentalModelChallenge
+        question="You have a 4-core server. Should you run 4 Uvicorn workers or 8?"
+        options={[
+          {
+            label: "4 workers — one per core, no competition",
+            correct: false,
+            explanation: "For I/O-bound work, you're leaving throughput on the table.",
+          },
+          {
+            label: "9 workers — the formula is (2 x cores) + 1",
+            correct: true,
+            explanation: "For I/O-bound APIs, workers spend most of their time waiting. More workers means better utilization.",
+          },
+          {
+            label: "As many as possible — more workers = more throughput",
+            correct: false,
+            explanation: "Too many workers waste memory and cause context-switching overhead.",
+          },
+        ]}
+        hint="Think about what your workers spend most of their time doing."
+        answer="The classic formula is 2 * CPU_CORES + 1, so 9 workers for 4 cores. But this is for I/O-bound workloads (most APIs). For CPU-bound work (ML inference, image processing), stick closer to CPU_CORES (4). More workers than cores means they compete for CPU time. Fewer means you're leaving throughput on the table. Monitor and tune based on your actual workload."
+        className="mb-8"
+      />
+
+      <AhaMoment
+        setup="Why does the formula use 2x cores and not 1x for async workers that already handle concurrency?"
+        reveal="Great question! Even though each async worker handles many concurrent connections, the worker process still occasionally blocks — garbage collection, CPU work, synchronous middleware, or def endpoints running in the thread pool. Having 2x workers means when one worker is briefly blocked, others pick up the slack. For a purely async app with zero blocking, fewer workers (closer to core count) might work. But 2n+1 is a safe default because real apps always have some blocking."
+        className="mb-8"
+      />
 
       <Separator className="my-8" />
 
