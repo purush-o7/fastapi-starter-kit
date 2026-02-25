@@ -6,6 +6,9 @@ import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
+import { RoughHighlight } from "@/components/rough-highlight";
+import { AutoAnimateGrid } from "@/components/auto-animate-grid";
+import { VenvIsolationViz } from "../_components/venv-isolation-viz";
 
 const mistakes: Mistake[] = [
   {
@@ -65,11 +68,21 @@ export default function PythonSetupPage() {
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Why Virtual Environments?</h2>
           <p className="text-muted-foreground mb-4">
-            Without virtual environments, every Python project on your machine shares the same global packages. This leads to version conflicts: Project A needs FastAPI 0.100, but Project B needs 0.115. Updating one breaks the other.
+            Without virtual environments, every Python project on your machine shares the same <RoughHighlight type="highlight" color="#f43f5e">global packages</RoughHighlight>. This leads to <RoughHighlight type="underline" color="#f43f5e">version conflicts</RoughHighlight>: Project A needs FastAPI 0.100, but Project B needs 0.115. Updating one breaks the other.
           </p>
           <p className="text-muted-foreground">
-            Virtual environments solve this by giving each project its own isolated sandbox of packages. Each project gets exactly the versions it needs, with zero interference from other projects.
+            Virtual environments solve this by giving each project its own <RoughHighlight type="box" color="#f43f5e">isolated sandbox</RoughHighlight> of packages. Each project gets exactly the versions it needs, with zero interference from other projects.
           </p>
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Visualize: Package Isolation</h2>
+          <p className="text-muted-foreground mb-4">See what happens when two projects share global packages versus using isolated virtual environments.</p>
+          <VenvIsolationViz />
         </section>
       </ScrollReveal>
 
@@ -154,24 +167,24 @@ python-dotenv==1.0.1`}
       <ScrollReveal>
         <section>
           <h2 className="text-2xl font-semibold mb-4">Key Points</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-lg border p-4">
+          <AutoAnimateGrid className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">Always Use Venvs</p>
               <p className="text-xs text-muted-foreground">Isolate each project to avoid dependency conflicts between projects</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">pip Installs Packages</p>
               <p className="text-xs text-muted-foreground">Use pip install to add packages to your active virtual environment</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">pip freeze Saves Deps</p>
               <p className="text-xs text-muted-foreground">Snapshot your installed packages with exact versions to a file</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">requirements.txt Shares Deps</p>
               <p className="text-xs text-muted-foreground">Anyone can recreate your environment with pip install -r requirements.txt</p>
             </div>
-          </div>
+          </AutoAnimateGrid>
         </section>
       </ScrollReveal>
 

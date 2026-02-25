@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { JwtAnatomy } from "../_components/jwt-anatomy";
 
 export default function OAuth2JwtPage() {
   return (
@@ -89,6 +90,19 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 @app.get("/users/me")
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user`} filename="main.py" />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      {/* Interactive: JWT Anatomy + Misconceptions */}
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Understanding JWT Tokens</h2>
+          <p className="text-muted-foreground mb-4">
+            A JWT is three base64-encoded segments joined by dots. Explore its structure, see how signing works, and learn why tampering is detected.
+          </p>
+          <JwtAnatomy />
         </section>
       </ScrollReveal>
 

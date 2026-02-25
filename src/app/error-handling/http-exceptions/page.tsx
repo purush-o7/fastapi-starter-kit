@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { ExceptionFlowSim } from "../_components/exception-flow-sim";
 
 export default function HttpExceptionsPage() {
   return (
@@ -36,6 +37,16 @@ async def read_item(item_id: str):
             detail="Item not found",
         )
     return {"item": items[item_id]}`} filename="main.py" />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">See the Exception Flow</h2>
+          <p className="text-muted-foreground mb-4">Watch what happens when an endpoint raises HTTPException — from request to JSON error response.</p>
+          <ExceptionFlowSim />
         </section>
       </ScrollReveal>
 

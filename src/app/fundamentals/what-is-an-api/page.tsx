@@ -5,6 +5,9 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { RoughHighlight } from "@/components/rough-highlight";
+import { AutoAnimateGrid } from "@/components/auto-animate-grid";
+import { ApiRequestBuilder } from "../_components/api-request-builder";
 
 export default function WhatIsAnApiPage() {
   return (
@@ -28,7 +31,11 @@ export default function WhatIsAnApiPage() {
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">What Does API Stand For?</h2>
           <p className="text-muted-foreground mb-4">
-            API stands for <strong>Application Programming Interface</strong> — a contract between software systems that defines how they communicate. Think of it as a waiter in a restaurant: you (the client) tell the waiter (the API) what you want, and the kitchen (the server) prepares it. You never go into the kitchen yourself — the waiter handles the back-and-forth.
+            API stands for{" "}
+            <RoughHighlight type="highlight" color="rgba(244, 63, 94, 0.15)" animationDuration={1200}>
+              <strong>Application Programming Interface</strong>
+            </RoughHighlight>
+            {" "}— a contract between software systems that defines how they communicate. Think of it as a waiter in a restaurant: you (the client) tell the waiter (the API) what you want, and the kitchen (the server) prepares it. You never go into the kitchen yourself — the waiter handles the back-and-forth.
           </p>
           <p className="text-muted-foreground">
             In web development, APIs let your frontend (or any client) send requests to a backend server and receive structured data in return. FastAPI is a framework for building the server side of this equation.
@@ -42,7 +49,13 @@ export default function WhatIsAnApiPage() {
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">HTTP: The Language of APIs</h2>
           <p className="text-muted-foreground mb-4">
-            HTTP (HyperText Transfer Protocol) is how clients and servers communicate. Every API interaction is an HTTP request followed by an HTTP response. A request contains a method (GET, POST, etc.), a URL, headers, and optionally a body. A response contains a status code, headers, and a body with the data.
+            HTTP (HyperText Transfer Protocol) is how clients and servers communicate. Every API interaction is an HTTP request followed by an HTTP response. A request contains a{" "}
+            <RoughHighlight type="underline" color="rgba(244, 63, 94, 0.6)" strokeWidth={2}>method (GET, POST, etc.)</RoughHighlight>
+            , a URL, headers, and optionally a body. A response contains a{" "}
+            <RoughHighlight type="box" color="rgba(244, 63, 94, 0.5)" strokeWidth={1.5} padding={3}>
+              <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">status code</code>
+            </RoughHighlight>
+            , headers, and a body with the data.
           </p>
           <CodeBlock
             code={`# Request
@@ -66,7 +79,9 @@ Content-Type: application/json
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">JSON: The Data Format</h2>
           <p className="text-muted-foreground mb-4">
-            JSON (JavaScript Object Notation) is the standard data format for APIs. It maps almost directly to Python dictionaries, with a few small differences in syntax.
+            JSON (JavaScript Object Notation) is the{" "}
+            <RoughHighlight type="underline" color="rgba(52, 211, 153, 0.6)" strokeWidth={2}>standard data format for APIs</RoughHighlight>.
+            It maps almost directly to Python dictionaries, with a few small differences in syntax.
           </p>
           <CodeBlock
             code={`# Python dictionary
@@ -95,7 +110,6 @@ item = {
           </p>
 
           <div className="grid gap-3 sm:grid-cols-3">
-            {/* Success codes - green themed */}
             <div className="rounded-lg border border-green-500/30 bg-green-500/5 p-4">
               <p className="text-sm font-mono font-bold text-green-600 dark:text-green-400">200</p>
               <p className="text-sm font-medium">OK</p>
@@ -111,8 +125,6 @@ item = {
               <p className="text-sm font-medium">No Content</p>
               <p className="text-xs text-muted-foreground">Success, no body returned</p>
             </div>
-
-            {/* Client error codes - amber themed */}
             <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
               <p className="text-sm font-mono font-bold text-amber-600 dark:text-amber-400">400</p>
               <p className="text-sm font-medium">Bad Request</p>
@@ -133,8 +145,6 @@ item = {
               <p className="text-sm font-medium">Validation Error</p>
               <p className="text-xs text-muted-foreground">Data failed validation</p>
             </div>
-
-            {/* Server error codes - red themed */}
             <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-4">
               <p className="text-sm font-mono font-bold text-red-600 dark:text-red-400">500</p>
               <p className="text-sm font-medium">Internal Server Error</p>
@@ -146,27 +156,40 @@ item = {
 
       <Separator className="my-8" />
 
+      {/* Interactive: API Request Builder */}
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Try It: Build a Request</h2>
+          <p className="text-muted-foreground mb-4">
+            Pick a scenario, hit Send, and watch the full HTTP conversation play out — from request to response.
+          </p>
+          <ApiRequestBuilder />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
       <ScrollReveal>
         <section>
           <h2 className="text-2xl font-semibold mb-4">Key Points</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-lg border p-4">
+          <AutoAnimateGrid className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">APIs Are Contracts</p>
               <p className="text-xs text-muted-foreground">They define how software systems communicate without exposing internals</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">HTTP Is the Protocol</p>
               <p className="text-xs text-muted-foreground">Requests and responses flow over HTTP with methods, URLs, headers, and bodies</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">JSON Is the Format</p>
               <p className="text-xs text-muted-foreground">Structured data travels as JSON — nearly identical to Python dicts</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">Status Codes Communicate Results</p>
               <p className="text-xs text-muted-foreground">2xx for success, 4xx for client errors, 5xx for server errors</p>
             </div>
-          </div>
+          </AutoAnimateGrid>
         </section>
       </ScrollReveal>
     </div>

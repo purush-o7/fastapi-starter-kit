@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.9.0",
+    "@xyflow/react": "^12.10.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.575.0",
@@ -18,6 +20,7 @@
     "radix-ui": "^1.4.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-rough-notation": "^1.0.8",
     "shiki": "^3.22.0",
     "tailwind-merge": "^3.5.0"
   },

@@ -19,6 +19,8 @@ import {
   BookOpen,
   Sparkles,
   Code,
+  Cpu,
+  TestTube,
 } from "lucide-react";
 import { AnimatedHero } from "./_components/animated-hero";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -63,7 +65,7 @@ const basicsCategories = [
     icon: Braces,
     description:
       "Request bodies, Pydantic models, and response models — how FastAPI validates and serializes your data.",
-    topicCount: 3,
+    topicCount: 4,
     accent: "text-blue-500 bg-blue-500/10 border-blue-500/20",
   },
 ];
@@ -74,8 +76,8 @@ const coreCategories = [
     label: "Architecture",
     icon: GitFork,
     description:
-      "APIRouter, dependency injection, and middleware — organize and scale your FastAPI application.",
-    topicCount: 3,
+      "APIRouter, dependency injection, middleware, CORS, and lifespan events — organize and scale your FastAPI application.",
+    topicCount: 5,
     accent: "text-purple-500 bg-purple-500/10 border-purple-500/20",
   },
   {
@@ -87,6 +89,15 @@ const coreCategories = [
     topicCount: 2,
     accent: "text-orange-500 bg-orange-500/10 border-orange-500/20",
   },
+  {
+    href: "/under-the-hood",
+    label: "Under the Hood",
+    icon: Cpu,
+    description:
+      "Event loop, ASGI servers, and process managers — how FastAPI actually handles your requests.",
+    topicCount: 3,
+    accent: "text-lime-500 bg-lime-500/10 border-lime-500/20",
+  },
 ];
 
 const advancedCategories = [
@@ -95,8 +106,8 @@ const advancedCategories = [
     label: "Auth & Security",
     icon: Shield,
     description:
-      "OAuth2 with JWT tokens and API key authentication — secure your endpoints.",
-    topicCount: 2,
+      "OAuth2 with JWT tokens, API key authentication, and rate limiting — secure your endpoints.",
+    topicCount: 3,
     accent: "text-amber-500 bg-amber-500/10 border-amber-500/20",
   },
   {
@@ -104,18 +115,30 @@ const advancedCategories = [
     label: "Background & Async",
     icon: Timer,
     description:
-      "Async endpoints and background tasks — handle concurrent requests and deferred work.",
-    topicCount: 2,
+      "Async endpoints, background tasks, and WebSockets — handle concurrent requests, deferred work, and real-time communication.",
+    topicCount: 3,
     accent: "text-indigo-500 bg-indigo-500/10 border-indigo-500/20",
   },
   {
-    href: "/database-files",
-    label: "Database & Files",
+    href: "/database",
+    label: "Database",
     icon: Database,
     description:
-      "Database integration with SQLAlchemy and file upload handling.",
-    topicCount: 2,
+      "SQLAlchemy models, database sessions, Alembic migrations, and CRUD operations.",
+    topicCount: 4,
     accent: "text-cyan-500 bg-cyan-500/10 border-cyan-500/20",
+  },
+];
+
+const productionCategories = [
+  {
+    href: "/testing",
+    label: "Testing",
+    icon: TestTube,
+    description:
+      "Testing your FastAPI application — from basic endpoint tests to dependency overrides and async testing.",
+    topicCount: 1,
+    accent: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
   },
 ];
 
@@ -275,10 +298,10 @@ export default function Home() {
 
       <Separator className="my-8" />
 
-      <section>
+      <section className="mb-10">
         <div className="flex items-center gap-2 mb-2">
           <h2 className="text-xl font-semibold">Advanced</h2>
-          <Badge variant="secondary">Production</Badge>
+          <Badge variant="secondary">Deep Dive</Badge>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
           Authentication, async patterns, database integration, and file
@@ -302,6 +325,55 @@ export default function Home() {
                     </Badge>
                   </div>
                   <CardDescription>{category.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <Separator className="my-8" />
+
+      <section>
+        <div className="flex items-center gap-2 mb-2">
+          <h2 className="text-xl font-semibold">Production</h2>
+          <Badge
+            variant="default"
+            className="bg-gradient-to-r from-emerald-500 to-green-500 border-0"
+          >
+            Ship It
+          </Badge>
+        </div>
+        <p className="text-sm text-muted-foreground mb-6">
+          Testing and quality assurance — make sure your API works before
+          shipping it to production.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {productionCategories.map((category) => (
+            <Link key={category.href} href={category.href}>
+              <Card className="group h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer border-border/50 hover:border-border">
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <div className={`rounded-md p-1 ${category.accent}`}>
+                      <category.icon className="size-4" />
+                    </div>
+                    <CardTitle className="text-base">
+                      {category.label}
+                    </CardTitle>
+                    <Badge
+                      variant="secondary"
+                      className="ml-auto text-[10px]"
+                    >
+                      {category.topicCount} topics
+                    </Badge>
+                  </div>
+                  <CardDescription className="line-clamp-2">
+                    {category.description}
+                  </CardDescription>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground/70 pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span>Explore</span>
+                    <ArrowRight className="size-3" />
+                  </div>
                 </CardHeader>
               </Card>
             </Link>

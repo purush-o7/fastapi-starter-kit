@@ -33,9 +33,11 @@ const categoryTopics: Record<string, TopicLink[]> = {
     { href: "/background-async/async-endpoints" },
     { href: "/background-async/background-tasks" },
   ],
-  "/database-files": [
-    { href: "/database-files/database-integration" },
-    { href: "/database-files/file-uploads" },
+  "/database": [
+    { href: "/database/sqlalchemy-models" },
+    { href: "/database/sessions" },
+    { href: "/database/alembic-migrations" },
+    { href: "/database/crud-operations" },
   ],
 };
 

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Bolt, ListTodo, Lightbulb, Globe, RefreshCw, Pause, Play, ArrowRight } from "lucide-react";
+import { Bolt, ListTodo, Lightbulb, Globe, RefreshCw, Pause, Play, ArrowRight, Radio } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
 import { AsyncHeroViz } from "./_components/async-hero-viz";
@@ -23,6 +23,12 @@ const topics = [
     label: "Background Tasks",
     icon: ListTodo,
     description: "Run tasks after returning a response — emails, cleanup, notifications.",
+  },
+  {
+    href: "/background-async/websockets",
+    label: "WebSockets",
+    icon: Radio,
+    description: "Real-time bidirectional communication between client and server.",
   },
 ];
 
@@ -65,7 +71,7 @@ export default function BackgroundAsyncPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
           <h1 className="text-3xl font-bold">Background & Async</h1>
-          <Badge variant="secondary">2 topics</Badge>
+          <Badge variant="secondary">3 topics</Badge>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl">
           Master async/await for high-performance endpoints and background

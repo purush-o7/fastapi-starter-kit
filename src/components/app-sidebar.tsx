@@ -34,6 +34,15 @@ import {
   Terminal,
   FileKey,
   FileText,
+  Cpu,
+  RefreshCw,
+  ArrowLeftRight,
+  Server,
+  Cookie,
+  Plug,
+  Gauge,
+  Radio,
+  TestTube,
 } from "lucide-react";
 import {
   Sidebar,
@@ -105,6 +114,7 @@ const basicsCategories: Category[] = [
       { href: "/data-handling/request-body", label: "Request Body", icon: FileInput },
       { href: "/data-handling/pydantic-models", label: "Pydantic Models", icon: FileCheck },
       { href: "/data-handling/response-model", label: "Response Model", icon: FileOutput },
+      { href: "/data-handling/headers-cookies", label: "Headers & Cookies", icon: Cookie },
     ],
   },
 ];
@@ -118,6 +128,8 @@ const coreCategories: Category[] = [
       { href: "/architecture/api-router", label: "APIRouter", icon: FolderTree },
       { href: "/architecture/dependency-injection", label: "Dependency Injection", icon: Syringe },
       { href: "/architecture/middleware", label: "Middleware", icon: Layers },
+      { href: "/architecture/cors", label: "CORS", icon: Globe },
+      { href: "/architecture/lifespan", label: "Lifespan Events", icon: Plug },
     ],
   },
   {
@@ -127,6 +139,16 @@ const coreCategories: Category[] = [
     topics: [
       { href: "/error-handling/http-exceptions", label: "HTTP Exceptions", icon: Ban },
       { href: "/error-handling/custom-handlers", label: "Custom Handlers", icon: Settings },
+    ],
+  },
+  {
+    label: "Under the Hood",
+    href: "/under-the-hood",
+    icon: Cpu,
+    topics: [
+      { href: "/under-the-hood/event-loop", label: "The Event Loop", icon: RefreshCw },
+      { href: "/under-the-hood/asgi-vs-wsgi", label: "ASGI vs WSGI", icon: ArrowLeftRight },
+      { href: "/under-the-hood/uvicorn-gunicorn", label: "Uvicorn & Gunicorn", icon: Server },
     ],
   },
 ];
@@ -139,6 +161,7 @@ const advancedCategories: Category[] = [
     topics: [
       { href: "/auth-security/oauth2-jwt", label: "OAuth2 & JWT", icon: KeyRound },
       { href: "/auth-security/api-keys", label: "API Keys", icon: Key },
+      { href: "/auth-security/rate-limiting", label: "Rate Limiting", icon: Gauge },
     ],
   },
   {
@@ -148,15 +171,29 @@ const advancedCategories: Category[] = [
     topics: [
       { href: "/background-async/async-endpoints", label: "Async Endpoints", icon: Bolt },
       { href: "/background-async/background-tasks", label: "Background Tasks", icon: ListTodo },
+      { href: "/background-async/websockets", label: "WebSockets", icon: Radio },
     ],
   },
   {
-    label: "Database & Files",
-    href: "/database-files",
+    label: "Database",
+    href: "/database",
     icon: Database,
     topics: [
-      { href: "/database-files/database-integration", label: "Database Integration", icon: HardDrive },
-      { href: "/database-files/file-uploads", label: "File Uploads", icon: Upload },
+      { href: "/database/sqlalchemy-models", label: "SQLAlchemy Models", icon: HardDrive },
+      { href: "/database/sessions", label: "Database Sessions", icon: Key },
+      { href: "/database/alembic-migrations", label: "Alembic Migrations", icon: GitFork },
+      { href: "/database/crud-operations", label: "CRUD Operations", icon: Layers },
+    ],
+  },
+];
+
+const productionCategories: Category[] = [
+  {
+    label: "Testing",
+    href: "/testing",
+    icon: TestTube,
+    topics: [
+      { href: "/testing/pytest", label: "Testing with pytest", icon: TestTube },
     ],
   },
 ];
@@ -272,6 +309,20 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {advancedCategories.map((category) => (
+                <CategoryItem
+                  key={category.href}
+                  category={category}
+                  pathname={pathname}
+                />
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Production Ready</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {productionCategories.map((category) => (
                 <CategoryItem
                   key={category.href}
                   category={category}

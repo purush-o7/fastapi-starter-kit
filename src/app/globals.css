@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -165,5 +166,12 @@
   }
   .ambient-database {
     background-image: radial-gradient(ellipse at 20% 0%, oklch(0.6 0.118 184.704 / 4%) 0%, transparent 60%);
+  }
+  .ambient-under-the-hood {
+    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.768 0.233 130.85 / 4%) 0%, transparent 60%);
+  }
+  .ambient-production,
+  .ambient-testing {
+    background-image: radial-gradient(ellipse at 20% 0%, oklch(0.696 0.17 162.48 / 4%) 0%, transparent 60%);
   }
 }

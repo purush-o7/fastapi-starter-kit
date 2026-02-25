@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { ResponseFilterSim } from "../_components/response-filter-sim";
 
 export default function ResponseModelPage() {
   return (
@@ -51,6 +52,16 @@ async def create_user(user: UserIn):
     return user`}
             filename="main.py"
           />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">See the Filter in Action</h2>
+          <p className="text-muted-foreground mb-4">Watch how response_model strips sensitive fields from your API response. Raw data goes in, only safe fields come out.</p>
+          <ResponseFilterSim />
         </section>
       </ScrollReveal>
 

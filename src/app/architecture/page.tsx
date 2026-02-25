@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FolderTree, Syringe, Layers, Lightbulb, Globe, Play } from "lucide-react";
+import { FolderTree, Syringe, Layers, Lightbulb, Globe, Play, Plug } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -29,6 +29,18 @@ const topics = [
     label: "Middleware",
     icon: Layers,
     description: "Process requests and responses globally before they reach your endpoints.",
+  },
+  {
+    href: "/architecture/cors",
+    label: "CORS",
+    icon: Globe,
+    description: "Configure Cross-Origin Resource Sharing for frontend-backend communication.",
+  },
+  {
+    href: "/architecture/lifespan",
+    label: "Lifespan Events",
+    icon: Plug,
+    description: "Run startup and shutdown logic with the modern lifespan context manager.",
   },
 ];
 
@@ -105,7 +117,7 @@ export default function ArchitecturePage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
           <h1 className="text-3xl font-bold">Architecture</h1>
-          <Badge variant="secondary">3 topics</Badge>
+          <Badge variant="secondary">5 topics</Badge>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl">
           Patterns for structuring and scaling your FastAPI application.

@@ -4,6 +4,8 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { MiddlewareFlow } from "../_components/middleware-flow";
+import { MiddlewarePeeler } from "../_components/middleware-peeler";
 
 export default function MiddlewarePage() {
   return (
@@ -34,6 +36,16 @@ async def add_process_time_header(request: Request, call_next):
     process_time = time.perf_counter() - start_time
     response.headers["X-Process-Time"] = str(process_time)
     return response`} filename="main.py" />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Middleware Flow Visualized</h2>
+          <p className="text-muted-foreground mb-4">Watch how a request flows through each middleware layer, hits the endpoint, then the response travels back in reverse order.</p>
+          <MiddlewareFlow />
         </section>
       </ScrollReveal>
 
@@ -75,6 +87,16 @@ class AuthMiddleware(BaseHTTPMiddleware):
         return response
 
 app.add_middleware(AuthMiddleware)`} filename="main.py" />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Peel the Layers</h2>
+          <p className="text-muted-foreground mb-4">Middleware wraps your endpoint like Russian dolls. Peel away each layer to see what it does.</p>
+          <MiddlewarePeeler />
         </section>
       </ScrollReveal>
 

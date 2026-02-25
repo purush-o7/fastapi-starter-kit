@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { HandlerChainSim } from "../_components/handler-chain-sim";
 
 export default function CustomHandlersPage() {
   return (
@@ -49,6 +50,16 @@ async def get_item(item_id: int):
     if item_id not in database:
         raise ItemNotFoundException(item_id)
     return database[item_id]`} filename="main.py" />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Handler Chain in Action</h2>
+          <p className="text-muted-foreground mb-4">See how FastAPI checks each registered handler in order until one matches the exception type.</p>
+          <HandlerChainSim />
         </section>
       </ScrollReveal>
 

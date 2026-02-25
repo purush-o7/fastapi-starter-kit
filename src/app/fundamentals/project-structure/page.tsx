@@ -6,6 +6,9 @@ import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
+import { RoughHighlight } from "@/components/rough-highlight";
+import { AutoAnimateGrid } from "@/components/auto-animate-grid";
+import { ProjectExplorerViz } from "../_components/project-explorer-viz";
 
 const mistakes: Mistake[] = [
   {
@@ -89,7 +92,7 @@ export default function ProjectStructurePage() {
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Single File is Fine (At First)</h2>
           <p className="text-muted-foreground mb-4">
-            When you&apos;re learning FastAPI, a single <code className="text-sm bg-muted px-1.5 py-0.5 rounded">main.py</code> file is perfectly fine. Keep things simple until complexity demands structure. But as your app grows beyond a handful of endpoints, you&apos;ll need to split things up.
+            When you&apos;re learning FastAPI, a single <code className="text-sm bg-muted px-1.5 py-0.5 rounded">main.py</code> file is perfectly fine. Keep things simple until <RoughHighlight type="underline" color="#f43f5e">complexity demands structure</RoughHighlight>. But as your app grows beyond a handful of endpoints, you&apos;ll need to split things up.
           </p>
           <CodeBlock
             code={`from fastapi import FastAPI
@@ -110,7 +113,7 @@ async def root():
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Recommended Structure</h2>
           <p className="text-muted-foreground mb-4">
-            As your project grows, organize code by responsibility. Routers handle endpoints, schemas define data shapes, models map to database tables, and config manages settings.
+            As your project grows, <RoughHighlight type="highlight" color="#f43f5e">organize code by responsibility</RoughHighlight>. Routers handle endpoints, schemas define data shapes, models map to <RoughHighlight type="box" color="#f43f5e">database tables</RoughHighlight>, and config manages settings.
           </p>
           <CodeBlock
             code={`my_api/
@@ -132,6 +135,16 @@ async def root():
 └── dependencies.py      # Shared dependencies`}
             filename="project-layout"
           />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Explore: Interactive Project Tree</h2>
+          <p className="text-muted-foreground mb-4">Click any file or folder to see what belongs inside and why it lives there.</p>
+          <ProjectExplorerViz />
         </section>
       </ScrollReveal>
 
@@ -179,24 +192,24 @@ app.include_router(items.router, prefix="/items", tags=["Items"])`}
       <ScrollReveal>
         <section>
           <h2 className="text-2xl font-semibold mb-4">Key Points</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-lg border p-4">
+          <AutoAnimateGrid className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">Start Simple</p>
               <p className="text-xs text-muted-foreground">A single main.py is fine for learning and small projects</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">Split When It Grows</p>
               <p className="text-xs text-muted-foreground">Organize by responsibility once you have more than a few endpoints</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">Routers Organize Endpoints</p>
               <p className="text-xs text-muted-foreground">Group related endpoints into separate router files by domain</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">Schemas Validate Data</p>
               <p className="text-xs text-muted-foreground">Pydantic models in the schemas/ folder define your data contracts</p>
             </div>
-          </div>
+          </AutoAnimateGrid>
         </section>
       </ScrollReveal>
 

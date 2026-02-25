@@ -6,6 +6,9 @@ import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
+import { RoughHighlight } from "@/components/rough-highlight";
+import { AutoAnimateGrid } from "@/components/auto-animate-grid";
+import { EnvConfigViz } from "../_components/env-config-viz";
 
 const mistakes: Mistake[] = [
   {
@@ -72,10 +75,10 @@ export default function EnvironmentVariablesPage() {
         <section className="mb-10">
           <h2 className="text-2xl font-semibold mb-4">Why Not Hardcode Secrets?</h2>
           <p className="text-muted-foreground mb-4">
-            Hardcoding database passwords, API keys, and secret tokens directly in your source code is a major security risk. Your code gets pushed to GitHub, shared with teammates, and stored in version control history forever.
+            Hardcoding database passwords, API keys, and <RoughHighlight type="highlight" color="#f43f5e">secret tokens</RoughHighlight> directly in your source code is a <RoughHighlight type="underline" color="#f43f5e">major security risk</RoughHighlight>. Your code gets pushed to GitHub, shared with teammates, and stored in version control history forever.
           </p>
           <p className="text-muted-foreground">
-            Beyond security, different environments need different values. Your local database URL is not the same as staging or production. Environment variables let you change configuration without changing code.
+            Beyond security, different environments need different values. Your local database URL is not the same as staging or production. <RoughHighlight type="box" color="#f43f5e">Environment variables</RoughHighlight> let you change configuration without changing code.
           </p>
         </section>
       </ScrollReveal>
@@ -154,26 +157,36 @@ settings = Settings()
       <Separator className="my-8" />
 
       <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Try It: Config Validator</h2>
+          <p className="text-muted-foreground mb-4">Edit the .env values and watch Pydantic Settings validate them in real-time.</p>
+          <EnvConfigViz />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
         <section>
           <h2 className="text-2xl font-semibold mb-4">Key Points</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-lg border p-4">
+          <AutoAnimateGrid className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">Never Commit Secrets</p>
               <p className="text-xs text-muted-foreground">Passwords, API keys, and tokens should never appear in your source code</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">.env for Local Config</p>
               <p className="text-xs text-muted-foreground">Store environment-specific values in a .env file at project root</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">pydantic-settings for Type Safety</p>
               <p className="text-xs text-muted-foreground">Get automatic validation, defaults, and autocomplete for your config</p>
             </div>
-            <div className="rounded-lg border p-4">
+            <div className="rounded-lg border p-4 transition-colors hover:border-rose-500/30 hover:bg-rose-500/5">
               <p className="text-sm font-medium mb-1">.gitignore Your .env</p>
               <p className="text-xs text-muted-foreground">Always add .env to .gitignore to prevent accidental commits</p>
             </div>
-          </div>
+          </AutoAnimateGrid>
         </section>
       </ScrollReveal>
 

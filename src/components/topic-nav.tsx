@@ -23,11 +23,14 @@ const categoryTopics: Record<string, TopicLink[]> = {
     { href: "/data-handling/request-body", label: "Request Body" },
     { href: "/data-handling/pydantic-models", label: "Pydantic Models" },
     { href: "/data-handling/response-model", label: "Response Model" },
+    { href: "/data-handling/headers-cookies", label: "Headers & Cookies" },
   ],
   "/architecture": [
     { href: "/architecture/api-router", label: "APIRouter" },
     { href: "/architecture/dependency-injection", label: "Dependency Injection" },
     { href: "/architecture/middleware", label: "Middleware" },
+    { href: "/architecture/cors", label: "CORS" },
+    { href: "/architecture/lifespan", label: "Lifespan Events" },
   ],
   "/error-handling": [
     { href: "/error-handling/http-exceptions", label: "HTTP Exceptions" },
@@ -36,14 +39,26 @@ const categoryTopics: Record<string, TopicLink[]> = {
   "/auth-security": [
     { href: "/auth-security/oauth2-jwt", label: "OAuth2 & JWT" },
     { href: "/auth-security/api-keys", label: "API Keys" },
+    { href: "/auth-security/rate-limiting", label: "Rate Limiting" },
   ],
   "/background-async": [
     { href: "/background-async/async-endpoints", label: "Async Endpoints" },
     { href: "/background-async/background-tasks", label: "Background Tasks" },
+    { href: "/background-async/websockets", label: "WebSockets" },
   ],
-  "/database-files": [
-    { href: "/database-files/database-integration", label: "Database Integration" },
-    { href: "/database-files/file-uploads", label: "File Uploads" },
+  "/database": [
+    { href: "/database/sqlalchemy-models", label: "SQLAlchemy Models" },
+    { href: "/database/sessions", label: "Database Sessions" },
+    { href: "/database/alembic-migrations", label: "Alembic Migrations" },
+    { href: "/database/crud-operations", label: "CRUD Operations" },
+  ],
+  "/under-the-hood": [
+    { href: "/under-the-hood/event-loop", label: "The Event Loop" },
+    { href: "/under-the-hood/asgi-vs-wsgi", label: "ASGI vs WSGI" },
+    { href: "/under-the-hood/uvicorn-gunicorn", label: "Uvicorn & Gunicorn" },
+  ],
+  "/testing": [
+    { href: "/testing/pytest", label: "Testing with pytest" },
   ],
 };
 

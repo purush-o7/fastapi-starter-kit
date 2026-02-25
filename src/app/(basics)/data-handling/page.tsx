@@ -3,11 +3,10 @@
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FileInput, FileCheck, Code, FileOutput, Lightbulb } from "lucide-react";
+import { FileInput, FileCheck, Code, FileOutput, Lightbulb, Cookie } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
 import { DataHeroViz } from "./_components/data-hero-viz";
-import { PydanticPlayground } from "./_components/pydantic-playground";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
 
@@ -29,6 +28,12 @@ const topics = [
     label: "Response Model",
     icon: FileOutput,
     description: "Control API response shape and filter sensitive fields automatically.",
+  },
+  {
+    href: "/data-handling/headers-cookies",
+    label: "Headers & Cookies",
+    icon: Cookie,
+    description: "Read request headers, manage cookies, and set custom response headers.",
   },
 ];
 
@@ -83,7 +88,7 @@ export default function DataHandlingPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
           <h1 className="text-3xl font-bold">Data Handling</h1>
-          <Badge variant="secondary">3 topics</Badge>
+          <Badge variant="secondary">4 topics</Badge>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl">
           How FastAPI validates incoming data, serializes responses, and
@@ -133,12 +138,6 @@ export default function DataHandlingPage() {
           </Link>
         ))}
       </div>
-
-      {/* Interactive: Pydantic Playground */}
-      <ScrollReveal className="mb-12">
-        <h2 className="text-lg font-semibold mb-4">Try It: Pydantic Playground</h2>
-        <PydanticPlayground />
-      </ScrollReveal>
 
       <CommonMistakes mistakes={mistakes} />
     </div>

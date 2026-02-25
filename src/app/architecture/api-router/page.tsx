@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { RouterAssembly } from "../_components/router-assembly";
 
 export default function ApiRouterPage() {
   return (
@@ -57,6 +58,16 @@ app.include_router(users.router)
 
 # items endpoints: /items/, /items/{item_id}
 # users endpoints: /users/, /users/{user_id}`} filename="main.py" />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">See It Assemble</h2>
+          <p className="text-muted-foreground mb-4">Watch routers mount onto the app and see how prefixes resolve into final URLs.</p>
+          <RouterAssembly />
         </section>
       </ScrollReveal>
 

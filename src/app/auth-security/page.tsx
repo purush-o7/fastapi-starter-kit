@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { KeyRound, Key, Lightbulb, Shield, Lock, CheckCircle } from "lucide-react";
+import { KeyRound, Key, Lightbulb, Shield, Lock, CheckCircle, Gauge } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
 import { AuthHeroViz } from "./_components/auth-hero-viz";
@@ -23,6 +23,12 @@ const topics = [
     label: "API Keys",
     icon: Key,
     description: "Simple API key authentication using headers or query parameters.",
+  },
+  {
+    href: "/auth-security/rate-limiting",
+    label: "Rate Limiting",
+    icon: Gauge,
+    description: "Protect endpoints from abuse with per-route and global rate limits.",
   },
 ];
 
@@ -89,7 +95,7 @@ export default function AuthSecurityPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
           <h1 className="text-3xl font-bold">Auth & Security</h1>
-          <Badge variant="secondary">2 topics</Badge>
+          <Badge variant="secondary">3 topics</Badge>
         </div>
         <p className="text-muted-foreground text-lg max-w-2xl">
           Secure your API endpoints with authentication and authorization.

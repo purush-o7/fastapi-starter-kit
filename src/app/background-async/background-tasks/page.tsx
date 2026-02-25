@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { BackgroundTaskTimeline } from "../_components/background-task-timeline";
 
 export default function BackgroundTasksPage() {
   return (
@@ -80,6 +81,19 @@ async def list_items(
 ):
     background_tasks.add_task(write_log, "Items listed")
     return items`} filename="main.py" />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      {/* Interactive: Background Task Timeline */}
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">See It: Background Task Flow</h2>
+          <p className="text-muted-foreground mb-4">
+            Watch how FastAPI sends the response immediately, then runs email, logging, and notification tasks in the background — the client never waits.
+          </p>
+          <BackgroundTaskTimeline />
         </section>
       </ScrollReveal>
 

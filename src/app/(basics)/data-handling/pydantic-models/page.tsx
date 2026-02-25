@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { PydanticPlayground } from "../_components/pydantic-playground";
 
 export default function PydanticModelsPage() {
   return (
@@ -101,6 +102,19 @@ class User(BaseModel):
         return v`}
             filename="schemas.py"
           />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      {/* Interactive Playground */}
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Try It Yourself</h2>
+          <p className="text-muted-foreground mb-4">
+            Edit the JSON below and hit Validate to see how Pydantic checks each field. Switch between models or click &quot;break it&quot; to see validation errors in action.
+          </p>
+          <PydanticPlayground />
         </section>
       </ScrollReveal>
 

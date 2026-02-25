@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { SyncAsyncRace } from "../_components/sync-async-race";
 
 export default function AsyncEndpointsPage() {
   return (
@@ -87,6 +88,19 @@ def cpu_intensive_task(data: list) -> dict:
 async def process_data(data: list[int]):
     result = await run_in_threadpool(cpu_intensive_task, data)
     return result`} filename="main.py" />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      {/* Interactive: Sync vs Async Race */}
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">See It: Sync vs Async Race</h2>
+          <p className="text-muted-foreground mb-4">
+            Watch 3 identical database queries run side by side. Sync processes them one at a time. Async overlaps the I/O waits, finishing all three in the time it takes sync to do one.
+          </p>
+          <SyncAsyncRace />
         </section>
       </ScrollReveal>
 

@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
+import { ApiKeySim } from "../_components/api-key-sim";
 
 export default function ApiKeysPage() {
   return (
@@ -38,6 +39,16 @@ async def verify_api_key(api_key: str = Security(api_key_header)):
 @app.get("/data")
 async def get_data(user: str = Security(verify_api_key)):
     return {"message": f"Hello {user}", "data": [1, 2, 3]}`} filename="main.py" />
+        </section>
+      </ScrollReveal>
+
+      <Separator className="my-8" />
+
+      <ScrollReveal>
+        <section className="mb-10">
+          <h2 className="text-2xl font-semibold mb-4">Try API Key Auth</h2>
+          <p className="text-muted-foreground mb-4">Watch how FastAPI extracts and validates API keys from headers or query parameters.</p>
+          <ApiKeySim />
         </section>
       </ScrollReveal>
 
