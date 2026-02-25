@@ -1,10 +1,16 @@
 "use client";
+
+import dynamic from "next/dynamic";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
-import { WebSocketViz } from "../_components/websocket-viz";
+const WebSocketViz = dynamic(
+  () => import("../_components/websocket-viz").then(m => m.WebSocketViz),
+  { ssr: false, loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { HeartbeatViz } from "../_components/heartbeat-viz";
 import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
 import { AhaMoment } from "@/components/aha-moment";

@@ -1,4 +1,4 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,8 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { KeyRound, Key, Lightbulb, Shield, Lock, CheckCircle, Gauge } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
-import { AuthHeroViz } from "./_components/auth-hero-viz";
-import { JwtDecoder } from "./_components/jwt-decoder";
+const AuthHeroViz = dynamic(
+  () => import("./_components/auth-hero-viz").then(m => m.AuthHeroViz),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
+const JwtDecoder = dynamic(
+  () => import("./_components/jwt-decoder").then(m => m.JwtDecoder),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
 
@@ -33,11 +41,11 @@ const topics = [
 ];
 
 const flowSteps: FlowStep[] = [
-  { id: "credentials", label: "Send Credentials", description: "The client sends a username and password to the /token endpoint.", icon: KeyRound, color: "amber-500" },
-  { id: "verify", label: "Verify Identity", description: "FastAPI hashes the password and checks it against the stored hash in the database.", icon: Shield, color: "amber-500" },
-  { id: "issue", label: "Issue JWT", description: "A signed JWT access token is created with the user's claims and an expiration time.", icon: Key, color: "yellow-500" },
-  { id: "bearer", label: "Bearer Token", description: "The client includes the JWT in the Authorization header for subsequent requests.", icon: Lock, color: "yellow-500" },
-  { id: "authorize", label: "Validate & Authorize", description: "FastAPI decodes the token, verifies the signature, and grants access to the protected route.", icon: CheckCircle, color: "amber-500" },
+  { id: "credentials", label: "Send Credentials", description: "The client sends a username and password to the /token endpoint.", icon: <KeyRound className="size-5" />, color: "amber-500" },
+  { id: "verify", label: "Verify Identity", description: "FastAPI hashes the password and checks it against the stored hash in the database.", icon: <Shield className="size-5" />, color: "amber-500" },
+  { id: "issue", label: "Issue JWT", description: "A signed JWT access token is created with the user's claims and an expiration time.", icon: <Key className="size-5" />, color: "yellow-500" },
+  { id: "bearer", label: "Bearer Token", description: "The client includes the JWT in the Authorization header for subsequent requests.", icon: <Lock className="size-5" />, color: "yellow-500" },
+  { id: "authorize", label: "Validate & Authorize", description: "FastAPI decodes the token, verifies the signature, and grants access to the protected route.", icon: <CheckCircle className="size-5" />, color: "amber-500" },
 ];
 
 const mistakes: Mistake[] = [

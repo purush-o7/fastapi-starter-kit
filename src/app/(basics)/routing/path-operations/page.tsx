@@ -1,12 +1,22 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
-import { ParamAnatomy } from "../_components/param-anatomy";
-import { HttpMethodExplorer } from "../_components/http-method-explorer";
+const ParamAnatomy = dynamic(
+  () => import("../_components/param-anatomy").then(m => m.ParamAnatomy),
+  { ssr: false, loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
+const HttpMethodExplorer = dynamic(
+  () => import("../_components/http-method-explorer").then(m => m.HttpMethodExplorer),
+  { ssr: false, loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
 import { AhaMoment } from "@/components/aha-moment";
 import { WhatYouJustLearned } from "@/components/what-you-just-learned";

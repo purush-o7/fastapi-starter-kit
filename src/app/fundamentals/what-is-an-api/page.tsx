@@ -1,5 +1,7 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
@@ -7,7 +9,10 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
 import { RoughHighlight } from "@/components/rough-highlight";
 import { AutoAnimateGrid } from "@/components/auto-animate-grid";
-import { ApiRequestBuilder } from "../_components/api-request-builder";
+const ApiRequestBuilder = dynamic(
+  () => import("../_components/api-request-builder").then(m => m.ApiRequestBuilder),
+  { ssr: false, loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
 import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
 import { ConversationalCallout } from "@/components/conversational-callout";
 import { SimpleFlow } from "@/components/simple-flow";

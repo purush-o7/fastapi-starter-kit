@@ -1,4 +1,4 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,8 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Signpost, Variable, HelpCircle, Lightbulb, Globe, Play, ArrowRight } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
-import { RoutingHeroViz } from "./_components/routing-hero-viz";
-import { UrlPatternMatcher } from "./_components/url-pattern-matcher";
+const RoutingHeroViz = dynamic(
+  () => import("./_components/routing-hero-viz").then(m => m.RoutingHeroViz),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
+const UrlPatternMatcher = dynamic(
+  () => import("./_components/url-pattern-matcher").then(m => m.UrlPatternMatcher),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
 
@@ -33,11 +41,11 @@ const topics = [
 ];
 
 const flowSteps: FlowStep[] = [
-  { id: "url", label: "URL Request", description: "Client sends GET /items/42 to the server.", icon: Globe, color: "teal-500" },
-  { id: "match", label: "Path Match", description: "FastAPI matches the URL pattern to a path operation decorator.", icon: Signpost, color: "teal-500" },
-  { id: "params", label: "Extract Params", description: "Path and query parameters are extracted and type-validated automatically.", icon: Variable, color: "emerald-500" },
-  { id: "handler", label: "Run Handler", description: "The matched async function executes with validated parameters.", icon: Play, color: "emerald-500" },
-  { id: "response", label: "JSON Response", description: "The return value is serialized to JSON and sent back with status 200.", icon: ArrowRight, color: "teal-500" },
+  { id: "url", label: "URL Request", description: "Client sends GET /items/42 to the server.", icon: <Globe className="size-5" />, color: "teal-500" },
+  { id: "match", label: "Path Match", description: "FastAPI matches the URL pattern to a path operation decorator.", icon: <Signpost className="size-5" />, color: "teal-500" },
+  { id: "params", label: "Extract Params", description: "Path and query parameters are extracted and type-validated automatically.", icon: <Variable className="size-5" />, color: "emerald-500" },
+  { id: "handler", label: "Run Handler", description: "The matched async function executes with validated parameters.", icon: <Play className="size-5" />, color: "emerald-500" },
+  { id: "response", label: "JSON Response", description: "The return value is serialized to JSON and sent back with status 200.", icon: <ArrowRight className="size-5" />, color: "teal-500" },
 ];
 
 const mistakes: Mistake[] = [

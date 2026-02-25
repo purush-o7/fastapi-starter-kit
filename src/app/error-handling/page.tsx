@@ -1,4 +1,4 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,8 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Ban, Settings, Lightbulb, Globe, AlertTriangle, FileOutput } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
-import { ErrorHeroViz } from "./_components/error-hero-viz";
-import { StatusCodeExplorer } from "./_components/status-code-explorer";
+const ErrorHeroViz = dynamic(
+  () => import("./_components/error-hero-viz").then(m => m.ErrorHeroViz),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
+const StatusCodeExplorer = dynamic(
+  () => import("./_components/status-code-explorer").then(m => m.StatusCodeExplorer),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
 
@@ -27,10 +35,10 @@ const topics = [
 ];
 
 const flowSteps: FlowStep[] = [
-  { id: "request", label: "Request", description: "A client request arrives at your endpoint.", icon: Globe, color: "orange-500" },
-  { id: "error", label: "Error Raised", description: "Something goes wrong: raise HTTPException(status_code=404, detail='Not found').", icon: AlertTriangle, color: "red-500" },
-  { id: "handler", label: "Exception Handler", description: "FastAPI catches the exception and routes it to the matching handler (built-in or custom).", icon: Settings, color: "orange-500" },
-  { id: "response", label: "Error Response", description: 'A structured JSON error response is returned: {"detail": "Not found"} with status 404.', icon: FileOutput, color: "orange-500" },
+  { id: "request", label: "Request", description: "A client request arrives at your endpoint.", icon: <Globe className="size-5" />, color: "orange-500" },
+  { id: "error", label: "Error Raised", description: "Something goes wrong: raise HTTPException(status_code=404, detail='Not found').", icon: <AlertTriangle className="size-5" />, color: "red-500" },
+  { id: "handler", label: "Exception Handler", description: "FastAPI catches the exception and routes it to the matching handler (built-in or custom).", icon: <Settings className="size-5" />, color: "orange-500" },
+  { id: "response", label: "Error Response", description: 'A structured JSON error response is returned: {"detail": "Not found"} with status 404.', icon: <FileOutput className="size-5" />, color: "orange-500" },
 ];
 
 const mistakes: Mistake[] = [

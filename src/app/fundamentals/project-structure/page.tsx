@@ -1,5 +1,7 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
@@ -8,7 +10,10 @@ import { TextEffect } from "@/components/ui/text-effect";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { RoughHighlight } from "@/components/rough-highlight";
 import { AutoAnimateGrid } from "@/components/auto-animate-grid";
-import { ProjectExplorerViz } from "../_components/project-explorer-viz";
+const ProjectExplorerViz = dynamic(
+  () => import("../_components/project-explorer-viz").then(m => m.ProjectExplorerViz),
+  { ssr: false, loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
 import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
 import { ConversationalCallout } from "@/components/conversational-callout";
 import { SimpleFlow } from "@/components/simple-flow";

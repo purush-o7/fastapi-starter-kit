@@ -1,10 +1,16 @@
 "use client";
+
+import dynamic from "next/dynamic";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
-import { JwtAnatomy } from "../_components/jwt-anatomy";
+const JwtAnatomy = dynamic(
+  () => import("../_components/jwt-anatomy").then(m => m.JwtAnatomy),
+  { ssr: false, loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
 import { AhaMoment } from "@/components/aha-moment";
 import { WhatYouJustLearned } from "@/components/what-you-just-learned";

@@ -1,5 +1,7 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
@@ -7,7 +9,10 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { RoughHighlight } from "@/components/rough-highlight";
-import { EventLoopAnimation } from "../_components/event-loop-animation";
+const EventLoopAnimation = dynamic(
+  () => import("../_components/event-loop-animation").then(m => m.EventLoopAnimation),
+  { ssr: false, loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
 import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
 import { AhaMoment } from "@/components/aha-moment";
 import { WhatYouJustLearned } from "@/components/what-you-just-learned";

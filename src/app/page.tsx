@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
   Card,
@@ -21,7 +22,11 @@ import {
   Cpu,
   TestTube,
 } from "lucide-react";
-import { AnimatedHero } from "./_components/animated-hero";
+const AnimatedHero = dynamic(
+  () => import("./_components/animated-hero").then(m => m.AnimatedHero),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { ScrollReveal } from "@/components/scroll-reveal";
 
 const highlights = [

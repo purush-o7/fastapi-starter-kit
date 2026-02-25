@@ -1,4 +1,4 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,7 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Table2, HardDrive, GitBranch, Layers, Lightbulb, Database, FileCode, ArrowRight } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
-import { DatabaseHeroViz } from "./_components/database-hero-viz";
+const DatabaseHeroViz = dynamic(
+  () => import("./_components/database-hero-viz").then(m => m.DatabaseHeroViz),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
 
@@ -38,11 +42,11 @@ const topics = [
 ];
 
 const flowSteps: FlowStep[] = [
-  { id: "models", label: "Define Models", description: "Create Python classes that map to database tables using SQLAlchemy ORM.", icon: Table2, color: "cyan-500" },
-  { id: "migrate", label: "Create Migration", description: "Alembic compares your models to the database and generates a migration script.", icon: GitBranch, color: "cyan-500" },
-  { id: "apply", label: "Apply Migration", description: "Run alembic upgrade head to apply the schema changes to your database.", icon: Database, color: "teal-500" },
-  { id: "session", label: "Get Session", description: "Use Depends(get_db) to inject a database session into your endpoint.", icon: HardDrive, color: "teal-500" },
-  { id: "crud", label: "CRUD Operations", description: "Query, create, update, and delete records using the session.", icon: Layers, color: "cyan-500" },
+  { id: "models", label: "Define Models", description: "Create Python classes that map to database tables using SQLAlchemy ORM.", icon: <Table2 className="size-5" />, color: "cyan-500" },
+  { id: "migrate", label: "Create Migration", description: "Alembic compares your models to the database and generates a migration script.", icon: <GitBranch className="size-5" />, color: "cyan-500" },
+  { id: "apply", label: "Apply Migration", description: "Run alembic upgrade head to apply the schema changes to your database.", icon: <Database className="size-5" />, color: "teal-500" },
+  { id: "session", label: "Get Session", description: "Use Depends(get_db) to inject a database session into your endpoint.", icon: <HardDrive className="size-5" />, color: "teal-500" },
+  { id: "crud", label: "CRUD Operations", description: "Query, create, update, and delete records using the session.", icon: <Layers className="size-5" />, color: "cyan-500" },
 ];
 
 const mistakes: Mistake[] = [

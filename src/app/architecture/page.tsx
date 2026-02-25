@@ -1,4 +1,4 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -8,8 +8,16 @@ import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
-import { ArchitectureHeroViz } from "./_components/architecture-hero-viz";
-import { MiddlewarePeeler } from "./_components/middleware-peeler";
+const ArchitectureHeroViz = dynamic(
+  () => import("./_components/architecture-hero-viz").then(m => m.ArchitectureHeroViz),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
+const MiddlewarePeeler = dynamic(
+  () => import("./_components/middleware-peeler").then(m => m.MiddlewarePeeler),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 
 const topics = [
   {
@@ -45,11 +53,11 @@ const topics = [
 ];
 
 const flowSteps: FlowStep[] = [
-  { id: "request", label: "HTTP Request", description: "A client sends an HTTP request to your FastAPI application.", icon: Globe, color: "purple-500" },
-  { id: "middleware", label: "Middleware", description: "The request passes through middleware layers — CORS, logging, auth checks — before reaching any route.", icon: Layers, color: "purple-500" },
-  { id: "router", label: "Router Match", description: "FastAPI matches the request path and method to the correct APIRouter and endpoint.", icon: FolderTree, color: "violet-500" },
-  { id: "dependencies", label: "Dependencies", description: "Depends() resolves all dependencies — database sessions, current user, permissions — before calling the handler.", icon: Syringe, color: "violet-500" },
-  { id: "handler", label: "Handler", description: "Your endpoint function runs with all dependencies injected, processes the request, and returns a response.", icon: Play, color: "purple-500" },
+  { id: "request", label: "HTTP Request", description: "A client sends an HTTP request to your FastAPI application.", icon: <Globe className="size-5" />, color: "purple-500" },
+  { id: "middleware", label: "Middleware", description: "The request passes through middleware layers — CORS, logging, auth checks — before reaching any route.", icon: <Layers className="size-5" />, color: "purple-500" },
+  { id: "router", label: "Router Match", description: "FastAPI matches the request path and method to the correct APIRouter and endpoint.", icon: <FolderTree className="size-5" />, color: "violet-500" },
+  { id: "dependencies", label: "Dependencies", description: "Depends() resolves all dependencies — database sessions, current user, permissions — before calling the handler.", icon: <Syringe className="size-5" />, color: "violet-500" },
+  { id: "handler", label: "Handler", description: "Your endpoint function runs with all dependencies injected, processes the request, and returns a response.", icon: <Play className="size-5" />, color: "purple-500" },
 ];
 
 const mistakes: Mistake[] = [

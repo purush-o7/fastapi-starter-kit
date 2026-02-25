@@ -1,4 +1,4 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,8 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Bolt, ListTodo, Lightbulb, Globe, RefreshCw, Pause, Play, ArrowRight, Radio } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
-import { AsyncHeroViz } from "./_components/async-hero-viz";
-import { EventLoopSim } from "./_components/event-loop-sim";
+const AsyncHeroViz = dynamic(
+  () => import("./_components/async-hero-viz").then(m => m.AsyncHeroViz),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
+const EventLoopSim = dynamic(
+  () => import("./_components/event-loop-sim").then(m => m.EventLoopSim),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
 
@@ -33,11 +41,11 @@ const topics = [
 ];
 
 const flowSteps: FlowStep[] = [
-  { id: "request", label: "Request Arrives", description: "An HTTP request hits your async def endpoint.", icon: Globe, color: "indigo-500" },
-  { id: "eventloop", label: "Event Loop", description: "FastAPI's event loop picks up the coroutine — no thread needed.", icon: RefreshCw, color: "indigo-500" },
-  { id: "await", label: "Await I/O", description: "When you hit 'await db.fetch()', the event loop suspends this task and serves other requests.", icon: Pause, color: "blue-500" },
-  { id: "resume", label: "I/O Complete", description: "The database responds, the event loop resumes your function exactly where it left off.", icon: Play, color: "blue-500" },
-  { id: "response", label: "Send Response", description: "Your function returns the result, FastAPI sends the JSON response.", icon: ArrowRight, color: "indigo-500" },
+  { id: "request", label: "Request Arrives", description: "An HTTP request hits your async def endpoint.", icon: <Globe className="size-5" />, color: "indigo-500" },
+  { id: "eventloop", label: "Event Loop", description: "FastAPI's event loop picks up the coroutine — no thread needed.", icon: <RefreshCw className="size-5" />, color: "indigo-500" },
+  { id: "await", label: "Await I/O", description: "When you hit 'await db.fetch()', the event loop suspends this task and serves other requests.", icon: <Pause className="size-5" />, color: "blue-500" },
+  { id: "resume", label: "I/O Complete", description: "The database responds, the event loop resumes your function exactly where it left off.", icon: <Play className="size-5" />, color: "blue-500" },
+  { id: "response", label: "Send Response", description: "Your function returns the result, FastAPI sends the JSON response.", icon: <ArrowRight className="size-5" />, color: "indigo-500" },
 ];
 
 const mistakes: Mistake[] = [

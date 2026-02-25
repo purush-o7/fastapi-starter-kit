@@ -1,4 +1,4 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,7 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { TestTube, Lightbulb, FileSearch, Send, CheckCircle, ArrowRight, RefreshCw } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
-import { TestingHeroViz } from "./_components/testing-hero-viz";
+const TestingHeroViz = dynamic(
+  () => import("./_components/testing-hero-viz").then(m => m.TestingHeroViz),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
 
@@ -20,11 +24,11 @@ const topics = [
 ];
 
 const flowSteps: FlowStep[] = [
-  { id: "write", label: "Write Test", description: "Define a test function using pytest conventions (def test_*).", icon: FileSearch, color: "emerald-500" },
-  { id: "client", label: "Create Client", description: "Instantiate TestClient(app) to simulate HTTP requests without running a server.", icon: Send, color: "emerald-500" },
-  { id: "request", label: "Send Request", description: "Call client.get(), client.post(), etc. to hit your endpoints.", icon: ArrowRight, color: "green-500" },
-  { id: "assert", label: "Assert Response", description: "Check status codes, JSON body, and headers match your expectations.", icon: CheckCircle, color: "green-500" },
-  { id: "override", label: "Override Dependencies", description: "Swap real databases and auth for test fakes using dependency_overrides.", icon: RefreshCw, color: "emerald-500" },
+  { id: "write", label: "Write Test", description: "Define a test function using pytest conventions (def test_*).", icon: <FileSearch className="size-5" />, color: "emerald-500" },
+  { id: "client", label: "Create Client", description: "Instantiate TestClient(app) to simulate HTTP requests without running a server.", icon: <Send className="size-5" />, color: "emerald-500" },
+  { id: "request", label: "Send Request", description: "Call client.get(), client.post(), etc. to hit your endpoints.", icon: <ArrowRight className="size-5" />, color: "green-500" },
+  { id: "assert", label: "Assert Response", description: "Check status codes, JSON body, and headers match your expectations.", icon: <CheckCircle className="size-5" />, color: "green-500" },
+  { id: "override", label: "Override Dependencies", description: "Swap real databases and auth for test fakes using dependency_overrides.", icon: <RefreshCw className="size-5" />, color: "emerald-500" },
 ];
 
 const mistakes: Mistake[] = [

@@ -1,4 +1,4 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -8,8 +8,14 @@ import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
-import { UnderTheHoodHeroViz } from "./_components/under-the-hood-hero-viz";
-import { ServerComparison } from "./_components/server-comparison";
+const UnderTheHoodHeroViz = dynamic(
+  () => import("./_components/under-the-hood-hero-viz").then(m => m.UnderTheHoodHeroViz),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+const ServerComparison = dynamic(
+  () => import("./_components/server-comparison").then(m => m.ServerComparison),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
 
 const topics = [
   {
@@ -33,11 +39,11 @@ const topics = [
 ];
 
 const flowSteps: FlowStep[] = [
-  { id: "client", label: "Client Request", description: "A browser, mobile app, or another service sends an HTTP request to your server.", icon: Server, color: "lime-500" },
-  { id: "uvicorn", label: "ASGI Server (Uvicorn)", description: "Uvicorn receives the raw TCP connection, parses the HTTP protocol, and translates it into an ASGI event.", icon: Server, color: "green-500" },
-  { id: "eventloop", label: "Event Loop", description: "Python's asyncio event loop schedules your handler as a coroutine. If it awaits, the loop runs other tasks meanwhile.", icon: RefreshCw, color: "lime-500" },
-  { id: "handler", label: "Your async Handler", description: "Your endpoint function runs — validating input, querying databases, calling APIs — all non-blocking with await.", icon: Server, color: "green-500" },
-  { id: "response", label: "Response", description: "FastAPI serializes your return value to JSON, Uvicorn sends the HTTP response back to the client.", icon: Server, color: "lime-500" },
+  { id: "client", label: "Client Request", description: "A browser, mobile app, or another service sends an HTTP request to your server.", icon: <Server className="size-5" />, color: "lime-500" },
+  { id: "uvicorn", label: "ASGI Server (Uvicorn)", description: "Uvicorn receives the raw TCP connection, parses the HTTP protocol, and translates it into an ASGI event.", icon: <Server className="size-5" />, color: "green-500" },
+  { id: "eventloop", label: "Event Loop", description: "Python's asyncio event loop schedules your handler as a coroutine. If it awaits, the loop runs other tasks meanwhile.", icon: <RefreshCw className="size-5" />, color: "lime-500" },
+  { id: "handler", label: "Your async Handler", description: "Your endpoint function runs — validating input, querying databases, calling APIs — all non-blocking with await.", icon: <Server className="size-5" />, color: "green-500" },
+  { id: "response", label: "Response", description: "FastAPI serializes your return value to JSON, Uvicorn sends the HTTP response back to the client.", icon: <Server className="size-5" />, color: "lime-500" },
 ];
 
 const mistakes: Mistake[] = [

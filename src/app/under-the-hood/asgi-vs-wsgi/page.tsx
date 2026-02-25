@@ -1,5 +1,7 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
@@ -7,7 +9,10 @@ import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { BeforeAfter } from "@/components/before-after";
-import { AsgiWsgiViz } from "../_components/asgi-wsgi-viz";
+const AsgiWsgiViz = dynamic(
+  () => import("../_components/asgi-wsgi-viz").then(m => m.AsgiWsgiViz),
+  { ssr: false, loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
 import { Cable, Zap } from "lucide-react";
 import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
 import { AhaMoment } from "@/components/aha-moment";

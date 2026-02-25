@@ -1,4 +1,6 @@
 "use client";
+
+import dynamic from "next/dynamic";
 import { useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -6,7 +8,11 @@ import { CodeBlock } from "@/components/code-block";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { TextEffect } from "@/components/ui/text-effect";
 import { RoughHighlight } from "@/components/rough-highlight";
-import { DependencyTree } from "../_components/dependency-tree";
+const DependencyTree = dynamic(
+  () => import("../_components/dependency-tree").then(m => m.DependencyTree),
+  { ssr: false, loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import autoAnimate from "@formkit/auto-animate";
 import { WhatCouldGoWrong } from "@/components/what-could-go-wrong";
 import { ConversationalCallout } from "@/components/conversational-callout";

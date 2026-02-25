@@ -1,4 +1,4 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,7 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { FileInput, FileCheck, Code, FileOutput, Lightbulb, Cookie } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
-import { DataHeroViz } from "./_components/data-hero-viz";
+const DataHeroViz = dynamic(
+  () => import("./_components/data-hero-viz").then(m => m.DataHeroViz),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
 
@@ -38,10 +42,10 @@ const topics = [
 ];
 
 const flowSteps: FlowStep[] = [
-  { id: "json-body", label: "JSON Body", description: "The client sends a JSON request body to your endpoint.", icon: FileInput, color: "blue-500" },
-  { id: "parse-validate", label: "Parse & Validate", description: "FastAPI automatically parses the JSON and validates it against your Pydantic model.", icon: FileCheck, color: "blue-500" },
-  { id: "business-logic", label: "Business Logic", description: "Your handler receives a fully validated, type-safe Python object to work with.", icon: Code, color: "indigo-500" },
-  { id: "response-filter", label: "Response Model Filter", description: "The response_model strips out any fields not defined in the output schema before sending.", icon: FileOutput, color: "indigo-500" },
+  { id: "json-body", label: "JSON Body", description: "The client sends a JSON request body to your endpoint.", icon: <FileInput className="size-5" />, color: "blue-500" },
+  { id: "parse-validate", label: "Parse & Validate", description: "FastAPI automatically parses the JSON and validates it against your Pydantic model.", icon: <FileCheck className="size-5" />, color: "blue-500" },
+  { id: "business-logic", label: "Business Logic", description: "Your handler receives a fully validated, type-safe Python object to work with.", icon: <Code className="size-5" />, color: "indigo-500" },
+  { id: "response-filter", label: "Response Model Filter", description: "The response_model strips out any fields not defined in the output schema before sending.", icon: <FileOutput className="size-5" />, color: "indigo-500" },
 ];
 
 const mistakes: Mistake[] = [

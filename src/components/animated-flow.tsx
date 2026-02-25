@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Check, type LucideIcon } from "lucide-react";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface FlowStep {
   id: string;
   label: string;
   description: string;
-  icon: LucideIcon;
+  icon: React.ReactNode;
   color: string;
 }
 
@@ -56,8 +56,6 @@ export function AnimatedFlow({
         {steps.map((step, index) => {
           const isActive = index === activeIndex;
           const isCompleted = index < activeIndex;
-          const StepIcon = step.icon;
-
           return (
             <div key={step.id} className="flex items-center shrink-0">
               {/* Step node */}
@@ -100,14 +98,16 @@ export function AnimatedFlow({
                       <Check className="size-5 text-emerald-500" />
                     </motion.div>
                   ) : (
-                    <StepIcon
+                    <span
                       className={cn(
-                        "size-5 transition-colors duration-300",
+                        "transition-colors duration-300 [&_svg]:size-5",
                         isActive
                           ? `text-${accentColor}-500`
                           : "text-muted-foreground/50"
                       )}
-                    />
+                    >
+                      {step.icon}
+                    </span>
                   )}
                 </motion.div>
 
@@ -210,10 +210,9 @@ export function AnimatedFlow({
                   `bg-${accentColor}-500/10`
                 )}
               >
-                {(() => {
-                  const Icon = steps[activeIndex].icon;
-                  return <Icon className={cn("size-4", `text-${accentColor}-500`)} />;
-                })()}
+                <span className={cn("[&_svg]:size-4", `text-${accentColor}-500`)}>
+                  {steps[activeIndex].icon}
+                </span>
               </div>
               <div>
                 <p className="text-sm font-medium mb-0.5">

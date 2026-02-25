@@ -1,4 +1,4 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,8 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Globe, Terminal, FileKey, FolderTree, FileText, Lightbulb } from "lucide-react";
 import { CommonMistakes, type Mistake } from "@/components/common-mistakes";
 import { AnimatedFlow, type FlowStep } from "@/components/animated-flow";
-import { FundamentalsHeroViz } from "./_components/fundamentals-hero-viz";
-import { HttpMethodExplorer } from "./_components/http-method-explorer";
+const FundamentalsHeroViz = dynamic(
+  () => import("./_components/fundamentals-hero-viz").then(m => m.FundamentalsHeroViz),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
+const HttpMethodExplorer = dynamic(
+  () => import("./_components/http-method-explorer").then(m => m.HttpMethodExplorer),
+  { loading: () => <div className="h-64 rounded-lg bg-muted animate-pulse" /> }
+);
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { Separator } from "@/components/ui/separator";
 
@@ -45,11 +51,11 @@ const topics = [
 ];
 
 const flowSteps: FlowStep[] = [
-  { id: "api", label: "What is an API?", description: "Understand HTTP, JSON, and the request/response cycle that powers every web API.", icon: Globe, color: "rose-500" },
-  { id: "python", label: "Python Setup", description: "Set up Python, virtual environments, and pip to manage your project dependencies.", icon: Terminal, color: "rose-500" },
-  { id: "env", label: "Environment Vars", description: "Keep secrets out of code with .env files, python-dotenv, and pydantic-settings.", icon: FileKey, color: "pink-500" },
-  { id: "structure", label: "Project Structure", description: "Organize your FastAPI app into routers, schemas, models, and config modules.", icon: FolderTree, color: "pink-500" },
-  { id: "docs", label: "Auto Docs", description: "Explore FastAPI\u2019s built-in /docs and /redoc for automatic interactive API documentation.", icon: FileText, color: "rose-500" },
+  { id: "api", label: "What is an API?", description: "Understand HTTP, JSON, and the request/response cycle that powers every web API.", icon: <Globe className="size-5" />, color: "rose-500" },
+  { id: "python", label: "Python Setup", description: "Set up Python, virtual environments, and pip to manage your project dependencies.", icon: <Terminal className="size-5" />, color: "rose-500" },
+  { id: "env", label: "Environment Vars", description: "Keep secrets out of code with .env files, python-dotenv, and pydantic-settings.", icon: <FileKey className="size-5" />, color: "pink-500" },
+  { id: "structure", label: "Project Structure", description: "Organize your FastAPI app into routers, schemas, models, and config modules.", icon: <FolderTree className="size-5" />, color: "pink-500" },
+  { id: "docs", label: "Auto Docs", description: "Explore FastAPI\u2019s built-in /docs and /redoc for automatic interactive API documentation.", icon: <FileText className="size-5" />, color: "rose-500" },
 ];
 
 const mistakes: Mistake[] = [
