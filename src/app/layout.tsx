@@ -11,6 +11,7 @@ import { TableOfContents } from "@/components/table-of-contents";
 import { Github } from "lucide-react";
 import { PageTransition } from "@/components/page-transition";
 import { KeyboardProvider } from "@/components/keyboard-provider";
+import Script from "next/script";
 import "./globals.css";
 
 const instrumentSerif = Instrument_Serif({
@@ -83,6 +84,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-8BGX6XYTRC"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-8BGX6XYTRC');
+        `}
+      </Script>
       <body
         className={`${instrumentSerif.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
       >
