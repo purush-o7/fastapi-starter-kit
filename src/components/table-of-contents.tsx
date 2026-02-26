@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 
 interface TocItem {
   id: string;
@@ -84,6 +85,7 @@ export function TableOfContents() {
               href={`#${heading.id}`}
               onClick={(e) => {
                 e.preventDefault();
+                trackEvent("toc_section_clicked", { section_id: heading.id });
                 const el = document.getElementById(heading.id);
                 if (el && scrollContainerRef.current) {
                   const container = scrollContainerRef.current;

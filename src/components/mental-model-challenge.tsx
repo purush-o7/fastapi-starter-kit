@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Brain, Check, X, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 
 interface ChallengeOption {
@@ -32,11 +33,13 @@ export function MentalModelChallenge({
 
   const handleReveal = () => {
     setRevealed(true);
+    trackEvent("challenge_answer_revealed", { question: question.slice(0, 80) });
   };
 
   const handleSelect = (index: number) => {
     if (revealed) return;
     setSelected(index);
+    trackEvent("challenge_option_selected", { question: question.slice(0, 80), option_index: index });
   };
 
   return (

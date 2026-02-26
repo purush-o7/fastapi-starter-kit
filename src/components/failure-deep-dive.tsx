@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { Bug, AlertCircle, HelpCircle, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { CodeBlock } from "@/components/code-block";
 
@@ -52,7 +53,7 @@ export function FailureDeepDive({
 
       {/* Tabbed content */}
       <div className="px-5 pb-5">
-        <Tabs defaultValue="code" className="mt-3">
+        <Tabs defaultValue="code" className="mt-3" onValueChange={(tab) => trackEvent("failure_tab_switched", { title: title.slice(0, 60), tab })}>
           <TabsList className="w-fit">
             <TabsTrigger
               value="code"

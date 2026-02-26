@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Check, Copy, FileCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { trackEvent } from "@/lib/analytics";
 
 type HighlighterInstance = {
   codeToHtml: (code: string, options: { lang: string; theme: string }) => string;
@@ -80,6 +81,7 @@ export function CodeBlock({
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
     setCopied(true);
+    trackEvent("code_copied", { filename: filename || "unnamed" });
     setTimeout(() => setCopied(false), 2000);
   };
 

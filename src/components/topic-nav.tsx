@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 type TopicLink = { href: string; label: string };
 
@@ -78,13 +80,34 @@ export function TopicNav() {
   const prev = currentIndex > 0 ? topics[currentIndex - 1] : null;
   const next = currentIndex < topics.length - 1 ? topics[currentIndex + 1] : null;
 
+  const navRef = useRef<HTMLElement>(null);
+  const scrollFired = useRef(false);
+
+  useEffect(() => {
+    scrollFired.current = false;
+    const el = navRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !scrollFired.current) {
+          scrollFired.current = true;
+          trackEvent("topic_scroll_completed", { path: pathname });
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [pathname]);
+
   if (!prev && !next) return null;
 
   return (
-    <nav className="flex items-center justify-between border-t pt-8 mt-12">
+    <nav ref={navRef} className="flex items-center justify-between border-t pt-8 mt-12">
       {prev ? (
         <Link
           href={prev.href}
+          onClick={() => trackEvent("topic_nav_clicked", { direction: "previous", destination: prev.href })}
           className="group flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ChevronLeft className="size-4 transition-transform group-hover:-translate-x-0.5" />
@@ -99,6 +122,7 @@ export function TopicNav() {
       {next ? (
         <Link
           href={next.href}
+          onClick={() => trackEvent("topic_nav_clicked", { direction: "next", destination: next.href })}
           className="group flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors text-right"
         >
           <div>
