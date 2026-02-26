@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Environment Variables",
-  description: "Secure configuration with .env files and pydantic-settings",
+  description: "Secure your secrets with environment variables, .env files, and pydantic-settings in FastAPI applications.",
+  openGraph: {
+    title: "Environment Variables",
+    description: "Secure your secrets with environment variables, .env files, and pydantic-settings in FastAPI applications.",
+  },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

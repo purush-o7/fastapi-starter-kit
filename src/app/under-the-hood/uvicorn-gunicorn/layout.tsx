@@ -1,3 +1,14 @@
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Uvicorn & Gunicorn", description: "ASGI server vs process manager — when to use Uvicorn, Gunicorn, or both in production." };
-export default function Layout({ children }: { children: React.ReactNode }) { return children; }
+
+export const metadata: Metadata = {
+  title: "Uvicorn & Gunicorn",
+  description: "Deploy FastAPI in production with Uvicorn workers, Gunicorn process management, and proper scaling.",
+  openGraph: {
+    title: "Uvicorn & Gunicorn",
+    description: "Deploy FastAPI in production with Uvicorn workers, Gunicorn process management, and proper scaling.",
+  },
+};
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return children;
+}

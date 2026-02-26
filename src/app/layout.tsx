@@ -31,12 +31,49 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://fastapi101.vercel.app"),
   title: {
     default: "What is FastAPI — Interactive Guide",
     template: "%s | What is FastAPI",
   },
   description:
-    "Interactive learning guide for FastAPI core concepts with Python examples",
+    "Interactive learning guide for FastAPI core concepts — routing, Pydantic models, dependency injection, async, database integration, and more with Python examples.",
+  keywords: [
+    "FastAPI",
+    "Python",
+    "API",
+    "REST API",
+    "Pydantic",
+    "async",
+    "ASGI",
+    "web framework",
+    "tutorial",
+    "interactive guide",
+  ],
+  authors: [{ name: "Purushottam Reddy" }],
+  creator: "Purushottam Reddy",
+  openGraph: {
+    type: "website",
+    siteName: "What is FastAPI",
+    locale: "en_US",
+    title: "What is FastAPI — Interactive Guide",
+    description:
+      "Learn FastAPI through failure-first, interactive examples. Routing, validation, auth, databases, and more.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "What is FastAPI — Interactive Guide",
+    description:
+      "Learn FastAPI through failure-first, interactive examples. Routing, validation, auth, databases, and more.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
 };
 
 export default function RootLayout({

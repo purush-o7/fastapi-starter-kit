@@ -1,3 +1,14 @@
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Middleware", description: "Process requests and responses globally before they reach your endpoints in FastAPI." };
-export default function Layout({ children }: { children: React.ReactNode }) { return children; }
+
+export const metadata: Metadata = {
+  title: "Middleware",
+  description: "Add cross-cutting concerns like logging, timing, and error handling to every request with FastAPI middleware.",
+  openGraph: {
+    title: "Middleware",
+    description: "Add cross-cutting concerns like logging, timing, and error handling to every request with FastAPI middleware.",
+  },
+};
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return children;
+}
