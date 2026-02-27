@@ -319,7 +319,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Production Ready</SidebarGroupLabel>
+          <SidebarGroupLabel>Testing</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {productionCategories.map((category) => (

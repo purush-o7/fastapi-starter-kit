@@ -349,15 +349,15 @@ export default function Home() {
 
       <div className="my-10 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
 
-      {/* Production — right-aligned with whitespace */}
+      {/* Testing — right-aligned with whitespace */}
       <section>
         <div className="flex items-center gap-2 mb-2 sm:justify-end">
-          <h2 className="text-xl font-serif">Production</h2>
+          <h2 className="text-xl font-serif">Testing</h2>
           <Badge
             variant="default"
             className="bg-gradient-to-r from-emerald-500 to-green-500 border-0"
           >
-            Ship It
+            Quality
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground mb-6 sm:text-right">
