@@ -58,37 +58,64 @@ export function BreadcrumbNav() {
 
   const segments = pathname.split("/").filter(Boolean);
 
-  return (
-    <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
-      <Link
-        href="/"
-        className="hover:text-foreground transition-colors"
-      >
-        <Home className="size-3.5" />
-      </Link>
-      {segments.map((segment, i) => {
-        const href = "/" + segments.slice(0, i + 1).join("/");
-        const isLast = i === segments.length - 1;
-        const label = labelMap[segment] || segment.replace(/-/g, " ");
+  const BASE_URL = "https://fastapi101.vercel.app";
 
-        return (
-          <Fragment key={href}>
-            <ChevronRight className="size-3 text-muted-foreground/50" />
-            {isLast ? (
-              <span className="text-foreground font-medium truncate max-w-[200px]">
-                {label}
-              </span>
-            ) : (
-              <Link
-                href={href}
-                className="hover:text-foreground transition-colors truncate max-w-[150px]"
-              >
-                {label}
-              </Link>
-            )}
-          </Fragment>
-        );
-      })}
-    </nav>
+  const breadcrumbItems = [
+    { name: "Home", href: "/" },
+    ...segments.map((segment, i) => ({
+      name: labelMap[segment] || segment.replace(/-/g, " "),
+      href: "/" + segments.slice(0, i + 1).join("/"),
+    })),
+  ];
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbItems.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      ...(i < breadcrumbItems.length - 1 ? { item: `${BASE_URL}${item.href}` } : {}),
+    })),
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
+      <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <Link
+          href="/"
+          className="hover:text-foreground transition-colors"
+        >
+          <Home className="size-3.5" />
+        </Link>
+        {segments.map((segment, i) => {
+          const href = "/" + segments.slice(0, i + 1).join("/");
+          const isLast = i === segments.length - 1;
+          const label = labelMap[segment] || segment.replace(/-/g, " ");
+
+          return (
+            <Fragment key={href}>
+              <ChevronRight className="size-3 text-muted-foreground/50" />
+              {isLast ? (
+                <span className="text-foreground font-medium truncate max-w-[200px]">
+                  {label}
+                </span>
+              ) : (
+                <Link
+                  href={href}
+                  className="hover:text-foreground transition-colors truncate max-w-[150px]"
+                >
+                  {label}
+                </Link>
+              )}
+            </Fragment>
+          );
+        })}
+      </nav>
+    </>
   );
 }

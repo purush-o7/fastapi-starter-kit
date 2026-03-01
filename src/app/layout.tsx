@@ -12,6 +12,7 @@ import { Github } from "lucide-react";
 import { PageTransition } from "@/components/page-transition";
 import { KeyboardProvider } from "@/components/keyboard-provider";
 import { CommandPalette } from "@/components/command-palette";
+import { JsonLd } from "@/lib/structured-data";
 import Script from "next/script";
 import "./globals.css";
 
@@ -100,6 +101,20 @@ export default function RootLayout({
       <body
         className={`${instrumentSerif.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased`}
       >
+        <JsonLd
+          data={{
+            "@type": "WebSite",
+            name: "What is FastAPI",
+            url: "https://fastapi101.vercel.app",
+            description:
+              "Interactive learning guide for FastAPI core concepts with Python examples",
+            inLanguage: "en",
+            publisher: {
+              "@type": "Person",
+              name: "Purushottam Reddy",
+            },
+          }}
+        />
         <Providers>
           <SidebarProvider>
             <AppSidebar />
