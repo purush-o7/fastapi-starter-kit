@@ -11,6 +11,7 @@ import { TableOfContents } from "@/components/table-of-contents";
 import { Github } from "lucide-react";
 import { PageTransition } from "@/components/page-transition";
 import { KeyboardProvider } from "@/components/keyboard-provider";
+import { CommandPalette } from "@/components/command-palette";
 import Script from "next/script";
 import "./globals.css";
 
@@ -108,7 +109,8 @@ export default function RootLayout({
                   <SidebarTrigger className="-ml-1" />
                   <Separator orientation="vertical" className="mr-2 !h-4" />
                   <BreadcrumbNav />
-                  <div className="ml-auto flex items-center gap-1">
+                  <div className="ml-auto flex items-center gap-2">
+                    <CommandPalette />
                     <a
                       href="https://github.com/purush-o7/what-is-fastapi"
                       target="_blank"
